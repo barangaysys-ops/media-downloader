@@ -131,6 +131,16 @@ def format_eta(seconds):
     except Exception:
         return ""
 
+def clean_video_url(url):
+    if not url:
+        return ""
+    # Remove tracking query parameters like ?si= or &feature= from media links
+    if "youtu.be" in url or "youtube.com" in url:
+        url = re.sub(r'([?&])(si|feature)=[^&]+', '', url)
+        if '?' in url and not url.split('?')[1]:
+            url = url.rstrip('?')
+    return url.strip()
+
 def get_base_ydl_opts():
     return {
         'ffmpeg_location': FFMPEG_PATH,
@@ -140,6 +150,11 @@ def get_base_ydl_opts():
         'no_warnings': True,
         'no_color': True,
         'user_agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36',
+        'extractor_args': {
+            'youtube': {
+                'player_client': ['android', 'ios', 'mweb', 'web', 'tv'],
+            }
+        },
     }
 
 def detect_platform_from_url(url, extractor_key=None):
@@ -182,7 +197,7 @@ def detect_platform():
 @app.route("/api/info", methods=["POST"])
 def get_video_info():
     data = request.get_json() or {}
-    url = data.get("url", "").strip()
+    url = clean_video_url(data.get("url", "").strip())
     if not url:
         return jsonify({"success": False, "error": "Please provide a valid video URL"}), 400
 
@@ -427,7 +442,7 @@ def run_download_task(download_id, url, quality, title, thumbnail, platform_name
 @app.route("/api/download", methods=["POST"])
 def start_download():
     data = request.get_json() or {}
-    url = data.get("url", "").strip()
+    url = clean_video_url(data.get("url", "").strip())
     quality = data.get("quality", "best")
     title = data.get("title", "")
     thumbnail = data.get("thumbnail", "")

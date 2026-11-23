@@ -7,10 +7,11 @@ ENV PYTHONUNBUFFERED=1
 ENV PORT=5000
 ENV NO_BROWSER=true
 
-# Install system dependencies including FFmpeg
+# Install system dependencies including FFmpeg, NodeJS (for YouTube JS decryption on cloud IPs), and curl
 RUN apt-get update && apt-get install -y --no-install-recommends \
     ffmpeg \
     curl \
+    nodejs \
     && rm -rf /var/lib/apt/lists/*
 
 WORKDIR /app
