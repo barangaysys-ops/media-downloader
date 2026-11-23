@@ -13,8 +13,8 @@
   <meta property="og:type" content="website">
 
   <!-- ========================================================================= -->
-  <!-- GOOGLE ADSENSE SCRIPT TAG (Uncomment and replace with your Publisher ID)   -->
-  <!-- <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-XXXXXXXXXXXXXXXX" crossorigin="anonymous"></script> -->
+  <!-- ADSTERRA / AD NETWORK HEADER SCRIPTS                                      -->
+  <!-- Insert any global head ad scripts from Adsterra or Monetag below:         -->
   <!-- ========================================================================= -->
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -56,7 +56,8 @@
         radial-gradient(circle at 10% 15%, rgba(99, 102, 241, 0.15) 0%, transparent 45%),
         radial-gradient(circle at 85% 20%, rgba(255, 0, 51, 0.12) 0%, transparent 45%),
         radial-gradient(circle at 50% 85%, rgba(6, 182, 212, 0.1) 0%, transparent 50%);
-      padding: 1.5rem 1rem 5rem 1rem;
+      padding: 1.5rem 1rem 5.5rem 1rem;
+      position: relative;
     }
 
     .container {
@@ -65,6 +66,57 @@
       display: flex;
       flex-direction: column;
       gap: 1.5rem;
+      position: relative;
+      z-index: 10;
+    }
+
+    /* =========================================================================
+       SIDE SKYSCRAPER BANNERS (160x600 for Left & Right desktop margins)
+       ========================================================================= */
+    .skyscraper-side {
+      position: fixed;
+      top: 100px;
+      width: 160px;
+      height: 600px;
+      z-index: 40;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.35rem;
+    }
+
+    .skyscraper-side.left {
+      left: calc(50% - 430px - 180px);
+    }
+
+    .skyscraper-side.right {
+      right: calc(50% - 430px - 180px);
+    }
+
+    .skyscraper-card {
+      width: 100%;
+      height: 100%;
+      background: var(--ad-bg);
+      border: 1px dashed var(--ad-border);
+      border-radius: 0.85rem;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      padding: 1rem 0.75rem;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.4);
+      text-decoration: none;
+      color: inherit;
+    }
+
+    .skyscraper-card:hover {
+      border-color: var(--primary-accent);
+    }
+
+    @media (max-width: 1240px) {
+      .skyscraper-side {
+        display: none !important;
+      }
     }
 
     /* =========================================================================
@@ -99,6 +151,15 @@
       justify-content: center;
       transition: all 0.2s ease;
       box-shadow: 0 4px 20px rgba(0, 0, 0, 0.25);
+    }
+
+    /* High-CTR In-Card Ad (Above Download Button) */
+    .in-card-ad-slot {
+      margin: 1rem 0 1.25rem 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.35rem;
     }
 
     /* Mock Responsive Banner Ads */
@@ -188,6 +249,93 @@
 
     .mock-ad-cta:hover {
       transform: scale(1.03);
+    }
+
+    /* Floating Social Bar / Slide-In Push Notification Ad */
+    .social-bar-ad {
+      position: fixed;
+      bottom: 5rem;
+      left: 1.5rem;
+      background: #1e293b;
+      border: 1px solid rgba(99, 102, 241, 0.4);
+      border-radius: 0.95rem;
+      padding: 0.85rem 1rem;
+      display: flex;
+      align-items: center;
+      gap: 0.85rem;
+      z-index: 95;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.6);
+      max-width: 380px;
+      animation: slideInLeft 0.4s ease;
+    }
+
+    @keyframes slideInLeft {
+      from { transform: translateX(-120%); opacity: 0; }
+      to { transform: translateX(0); opacity: 1; }
+    }
+
+    .social-bar-ad.closed {
+      display: none !important;
+    }
+
+    .social-bar-icon {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #ec4899, #8b5cf6);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #fff;
+      font-size: 1.2rem;
+      flex-shrink: 0;
+    }
+
+    .social-bar-info {
+      display: flex;
+      flex-direction: column;
+      gap: 0.15rem;
+      overflow: hidden;
+    }
+
+    .social-bar-title {
+      font-size: 0.85rem;
+      font-weight: 700;
+      color: #fff;
+    }
+
+    .social-bar-desc {
+      font-size: 0.75rem;
+      color: #94a3b8;
+    }
+
+    .social-bar-action {
+      padding: 0.4rem 0.8rem;
+      background: linear-gradient(135deg, #10b981, #059669);
+      color: #fff;
+      text-decoration: none;
+      font-size: 0.775rem;
+      font-weight: 700;
+      border-radius: 0.45rem;
+      white-space: nowrap;
+      flex-shrink: 0;
+    }
+
+    .social-bar-close {
+      position: absolute;
+      top: -8px;
+      right: -8px;
+      width: 22px;
+      height: 22px;
+      border-radius: 50%;
+      background: #334155;
+      border: 1px solid rgba(255,255,255,0.2);
+      color: #cbd5e1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.7rem;
+      cursor: pointer;
     }
 
     /* Sticky Bottom Ad */
@@ -589,7 +737,7 @@
       border: 1px dashed rgba(99, 102, 241, 0.35);
       border-radius: 0.95rem;
       padding: 0.85rem 1.15rem;
-      margin-bottom: 1.25rem;
+      margin-bottom: 1rem;
       transition: all 0.25s ease;
     }
 
@@ -1496,6 +1644,11 @@
       .ad-pitch-title {
         font-size: 1.1rem;
       }
+      .social-bar-ad {
+        left: 0.75rem;
+        right: 0.75rem;
+        max-width: none;
+      }
     }
   </style>
 
@@ -1503,6 +1656,46 @@
   <script src="https://www.youtube.com/iframe_api"></script>
 </head>
 <body>
+
+  <!-- =========================================================================
+       LEFT SKYSCRAPER BANNER AD (160x600 for wide desktop screens)
+       ========================================================================= -->
+  <aside class="skyscraper-side left" id="leftSkyscraper">
+    <span class="ad-disclaimer">Ad · 160×600</span>
+    <!-- Insert Adsterra 160x600 Banner Code Below: -->
+    <a href="https://github.com" target="_blank" rel="noopener noreferrer" class="skyscraper-card">
+      <div style="display:flex; flex-direction:column; gap:0.5rem; align-items:center; text-align:center;">
+        <div class="mock-ad-icon" style="width:52px; height:52px; font-size:1.5rem; margin-top:0.5rem;">🛡️</div>
+        <div style="font-size:0.95rem; font-weight:800; color:#fff; line-height:1.2;">Ultra VPN Pro</div>
+        <div style="font-size:0.75rem; color:#94a3b8; line-height:1.3;">Unlimited speed for video downloads.</div>
+        <span class="mock-ad-badge" style="margin-top:0.25rem;">Sponsored</span>
+      </div>
+      <div style="display:flex; flex-direction:column; gap:0.5rem; align-items:center; width:100%;">
+        <div style="font-size:1.15rem; font-weight:800; color:#38bdf8;">82% OFF</div>
+        <div class="mock-ad-cta" style="width:100%; justify-content:center; padding:0.6rem 0.5rem;">Claim Now</div>
+      </div>
+    </a>
+  </aside>
+
+  <!-- =========================================================================
+       RIGHT SKYSCRAPER BANNER AD (160x600 for wide desktop screens)
+       ========================================================================= -->
+  <aside class="skyscraper-side right" id="rightSkyscraper">
+    <span class="ad-disclaimer">Ad · 160×600</span>
+    <!-- Insert Adsterra 160x600 Banner Code Below: -->
+    <a href="https://github.com" target="_blank" rel="noopener noreferrer" class="skyscraper-card">
+      <div style="display:flex; flex-direction:column; gap:0.5rem; align-items:center; text-align:center;">
+        <div class="mock-ad-icon" style="width:52px; height:52px; font-size:1.5rem; margin-top:0.5rem; background:linear-gradient(135deg, #10b981, #06b6d4);">⚡</div>
+        <div style="font-size:0.95rem; font-weight:800; color:#fff; line-height:1.2;">Turbo Downloader</div>
+        <div style="font-size:0.75rem; color:#94a3b8; line-height:1.3;">10x speed booster for streams & audio.</div>
+        <span class="mock-ad-badge" style="margin-top:0.25rem; background:rgba(16,185,129,0.2); color:#6ee7b7; border-color:rgba(16,185,129,0.4);">Verified</span>
+      </div>
+      <div style="display:flex; flex-direction:column; gap:0.5rem; align-items:center; width:100%;">
+        <div style="font-size:1.15rem; font-weight:800; color:#10b981;">FREE</div>
+        <div class="mock-ad-cta" style="width:100%; justify-content:center; padding:0.6rem 0.5rem; background:linear-gradient(135deg, #10b981, #059669);">Install App</div>
+      </div>
+    </a>
+  </aside>
 
   <div class="container">
     
@@ -1512,8 +1705,7 @@
     <div class="ad-banner-wrapper" id="topAdSlot">
       <span class="ad-disclaimer">Advertisement</span>
       <div class="ad-slot-box">
-        <!-- Google AdSense Unit Placeholder -->
-        <!-- Replace the content below with: <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-XXXXX" data-ad-slot="XXXXX" data-ad-format="auto" data-full-width-responsive="true"></ins><script>(adsbygoogle = window.adsbygoogle || []).push({});</script> -->
+        <!-- Insert Adsterra 728x90 Banner Code Below: -->
         <a href="https://github.com" target="_blank" rel="noopener noreferrer" class="mock-ad-banner" id="topMockAd">
           <div class="mock-ad-left">
             <div class="mock-ad-icon">⚡</div>
@@ -1610,6 +1802,21 @@
             </button>
           </div>
         </div>
+
+        <!-- Under Player In-Card Sponsor Ad -->
+        <div class="ad-slot-box" style="margin-top: 0.5rem; min-height: 75px;">
+          <!-- Insert Adsterra 300x250 or native banner here: -->
+          <a href="https://github.com" target="_blank" rel="noopener noreferrer" class="mock-ad-banner" style="background: rgba(30, 41, 59, 0.4);">
+            <div class="mock-ad-left">
+              <div class="mock-ad-icon" style="width:36px; height:36px; font-size:1.1rem; background:linear-gradient(135deg, #ec4899, #8b5cf6);">🎬</div>
+              <div class="mock-ad-texts">
+                <div class="mock-ad-title" style="font-size:0.875rem;">Fast 4K Video Editor & Subtitle Generator</div>
+                <div class="mock-ad-desc" style="font-size:0.75rem;">Edit, trim, and upscale media in 1 click. Zero lag.</div>
+              </div>
+            </div>
+            <div class="mock-ad-cta" style="padding: 0.45rem 0.85rem; font-size: 0.775rem;">Try Editor</div>
+          </a>
+        </div>
       </div>
 
       <!-- Video Clipping Section -->
@@ -1647,6 +1854,33 @@
         </div>
       </div>
 
+      <!-- =====================================================================
+           HIGH-CTR AD UNIT: RIGHT ABOVE DOWNLOAD BUTTON
+           (Highest clicked ad position on downloader sites)
+           ===================================================================== -->
+      <div class="in-card-ad-slot" id="aboveDownloadAdSlot">
+        <span class="ad-disclaimer">Featured Sponsor</span>
+        <div class="ad-slot-box" style="min-height: 85px;">
+          <!-- Insert Adsterra 728x90, 468x60, or 300x250 Banner Code Below: -->
+          <a href="https://github.com" target="_blank" rel="noopener noreferrer" class="mock-ad-banner" style="background: linear-gradient(135deg, rgba(30, 41, 59, 0.9) 0%, rgba(20, 30, 48, 0.95) 100%);">
+            <div class="mock-ad-left">
+              <div class="mock-ad-icon" style="background: linear-gradient(135deg, #f59e0b, #ec4899);">⚡</div>
+              <div class="mock-ad-texts">
+                <div class="mock-ad-title">
+                  UltraSpeed Download Accelerator 2026
+                  <span class="mock-ad-badge" style="background:rgba(245, 158, 11, 0.2); color:#fbbf24; border-color:rgba(245, 158, 11, 0.4);">Featured</span>
+                </div>
+                <div class="mock-ad-desc">Bypass download throttling and unlock unmetered gigabit speeds.</div>
+              </div>
+            </div>
+            <div class="mock-ad-cta" style="background: linear-gradient(135deg, #f59e0b, #d97706);">
+              <span>Boost Speed</span>
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+            </div>
+          </a>
+        </div>
+      </div>
+
       <!-- Controls -->
       <div class="controls-row">
         <div class="control-group">
@@ -1674,6 +1908,7 @@
     <div class="ad-banner-wrapper" id="midAdSlot">
       <span class="ad-disclaimer">Sponsored Partner</span>
       <div class="ad-slot-box">
+        <!-- Insert Adsterra 728x90 or Native Banner Code Below: -->
         <a href="https://github.com" target="_blank" rel="noopener noreferrer" class="mock-ad-banner">
           <div class="mock-ad-left">
             <div class="mock-ad-icon" style="background: linear-gradient(135deg, #10b981, #06b6d4);">☁️</div>
@@ -1818,6 +2053,19 @@
   </div>
 
   <!-- =========================================================================
+       FLOATING SOCIAL BAR / SLIDE-IN PUSH NOTIFICATION AD
+       ========================================================================= -->
+  <div class="social-bar-ad" id="socialBarAd">
+    <button class="social-bar-close" id="closeSocialBarBtn" title="Close notification">✕</button>
+    <div class="social-bar-icon">🔥</div>
+    <div class="social-bar-info">
+      <div class="social-bar-title">High Speed Downloader</div>
+      <div class="social-bar-desc">Download in 4K with no waiting queue. Free trial!</div>
+    </div>
+    <a href="https://github.com" target="_blank" rel="noopener noreferrer" class="social-bar-action">Install</a>
+  </div>
+
+  <!-- =========================================================================
        STICKY BOTTOM BANNER AD (Can be minimized by user)
        ========================================================================= -->
   <div class="sticky-bottom-ad" id="stickyBottomAd">
@@ -1847,10 +2095,8 @@
        AD CONFIGURATION & ROTATION SETTINGS
        ========================================================================= */
     const AD_CONFIG = {
-      // Set to true to show demo/mock ads; set to false if integrating real Google AdSense tags
-      showDemoAds: true,
-      // Google AdSense Client ID (Optional, e.g. 'ca-pub-1234567890123456')
-      googleAdsenseId: '',
+      // Optional: Add your Adsterra Direct Link / Smartlink here for high-paying popunder revenue
+      popunderUrl: '',
       // Rotating sponsor ads inside the download progress modal
       sponsors: [
         {
@@ -1882,6 +2128,17 @@
         }
       ]
     };
+
+    // Popunder / Direct link trigger on first user interaction
+    let popunderTriggered = false;
+    function triggerPopunder() {
+      if (!popunderTriggered && AD_CONFIG.popunderUrl) {
+        popunderTriggered = true;
+        try {
+          window.open(AD_CONFIG.popunderUrl, '_blank');
+        } catch (e) {}
+      }
+    }
 
     // DOM Elements
     const videoUrlInput = document.getElementById('videoUrl');
@@ -1943,9 +2200,11 @@
     const modalCloseCompletedLink = document.getElementById('modalCloseCompletedLink');
     const modalDownloadAnotherLink = document.getElementById('modalDownloadAnotherLink');
 
-    // Sticky Ad elements
+    // Sticky Ad & Social Bar elements
     const stickyBottomAd = document.getElementById('stickyBottomAd');
     const closeStickyAdBtn = document.getElementById('closeStickyAdBtn');
+    const socialBarAd = document.getElementById('socialBarAd');
+    const closeSocialBarBtn = document.getElementById('closeSocialBarBtn');
 
     let currentVideoMeta = null;
     let detectedPlatform = null;
@@ -2209,6 +2468,7 @@
     }
 
     fetchBtn.addEventListener('click', () => {
+      triggerPopunder();
       fetchVideoInfo();
     });
 
@@ -2417,10 +2677,15 @@
       stickyBottomAd.classList.add('closed');
     });
 
+    closeSocialBarBtn.addEventListener('click', () => {
+      socialBarAd.classList.add('closed');
+    });
+
     /* =========================================================================
        DOWNLOAD TRIGGER & PROGRESS SYNC
        ========================================================================= */
     downloadBtn.addEventListener('click', async () => {
+      triggerPopunder();
       const url = videoUrlInput.value.trim();
       if (!url) {
         showToast('Please enter a link first', true);
