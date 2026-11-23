@@ -51,6 +51,11 @@ def setup_ffmpeg():
 
 FFMPEG_PATH = setup_ffmpeg()
 
+# Ensure user deno bin directory is in PATH if present
+deno_dir = os.path.expanduser("~/.deno/bin")
+if os.path.exists(deno_dir) and deno_dir not in os.environ.get("PATH", ""):
+    os.environ["PATH"] = deno_dir + os.pathsep + os.environ.get("PATH", "")
+
 # Store active download tasks in memory
 active_downloads = {}
 
@@ -142,6 +147,14 @@ def clean_video_url(url):
     return url.strip()
 
 def get_base_ydl_opts():
+    js_runtimes = {}
+    if shutil.which("deno"):
+        js_runtimes['deno'] = {}
+    if shutil.which("node"):
+        js_runtimes['node'] = {}
+    if not js_runtimes:
+        js_runtimes = {'deno': {}, 'node': {}}
+
     return {
         'ffmpeg_location': FFMPEG_PATH,
         'noplaylist': True,
@@ -149,10 +162,11 @@ def get_base_ydl_opts():
         'quiet': True,
         'no_warnings': True,
         'no_color': True,
-        'user_agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36',
+        'js_runtimes': js_runtimes,
+        'remote_components': ['ejs:github'],
         'extractor_args': {
             'youtube': {
-                'player_client': ['android', 'ios', 'mweb', 'web', 'tv'],
+                'player_client': ['tv_samsung', 'web_embedded', 'android', 'ios'],
             }
         },
     }

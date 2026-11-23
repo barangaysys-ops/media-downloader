@@ -7,12 +7,18 @@ ENV PYTHONUNBUFFERED=1
 ENV PORT=5000
 ENV NO_BROWSER=true
 
-# Install system dependencies including FFmpeg, NodeJS (for YouTube JS decryption on cloud IPs), and curl
+# Install system dependencies including FFmpeg, NodeJS, and curl
 RUN apt-get update && apt-get install -y --no-install-recommends \
     ffmpeg \
     curl \
     nodejs \
+    unzip \
     && rm -rf /var/lib/apt/lists/*
+
+# Install Deno for yt-dlp YouTube JS cipher/challenge solving on cloud IPs
+ENV DENO_INSTALL="/root/.deno"
+ENV PATH="${DENO_INSTALL}/bin:${PATH}"
+RUN curl -fsSL https://deno.land/install.sh | sh
 
 WORKDIR /app
 

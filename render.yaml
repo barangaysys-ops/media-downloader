@@ -2,7 +2,7 @@ services:
   - type: web
     name: media-downloader
     runtime: docker
-    plan: starter
+    plan: free
     region: oregon
     envVars:
       - key: PORT
