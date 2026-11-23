@@ -1,0 +1,2691 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Multi-Media Downloader | Download Any Video & Audio</title>
+  
+  <!-- SEO & Social Meta Tags -->
+  <meta name="description" content="Fast, free, and universal online media downloader. Download videos, audios, and clips from YouTube, TikTok, Instagram, Twitter/X, Facebook, Reddit, and 1,000+ websites.">
+  <meta name="keywords" content="video downloader, youtube downloader, tiktok downloader, mp4 downloader, mp3 converter, audio extractor, video trimmer">
+  <meta property="og:title" content="Universal Multi-Media Downloader">
+  <meta property="og:description" content="Download any video, audio, reel, or short in top quality for free.">
+  <meta property="og:type" content="website">
+
+  <!-- ========================================================================= -->
+  <!-- GOOGLE ADSENSE SCRIPT TAG (Uncomment and replace with your Publisher ID)   -->
+  <!-- <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-XXXXXXXXXXXXXXXX" crossorigin="anonymous"></script> -->
+  <!-- ========================================================================= -->
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  
+  <style>
+    :root {
+      --bg-dark: #0a0d14;
+      --card-bg: rgba(22, 27, 38, 0.85);
+      --card-border: rgba(255, 255, 255, 0.08);
+      --primary-accent: #6366f1;
+      --primary-glow: rgba(99, 102, 241, 0.35);
+      --text-main: #f3f4f6;
+      --text-muted: #9ca3af;
+      --accent-cyan: #06b6d4;
+      --accent-green: #10b981;
+      --accent-amber: #f59e0b;
+      --input-bg: rgba(15, 19, 29, 0.75);
+      --ad-bg: rgba(15, 23, 42, 0.65);
+      --ad-border: rgba(255, 255, 255, 0.1);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+    }
+
+    body {
+      background-color: var(--bg-dark);
+      color: var(--text-main);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      background-image: 
+        radial-gradient(circle at 10% 15%, rgba(99, 102, 241, 0.15) 0%, transparent 45%),
+        radial-gradient(circle at 85% 20%, rgba(255, 0, 51, 0.12) 0%, transparent 45%),
+        radial-gradient(circle at 50% 85%, rgba(6, 182, 212, 0.1) 0%, transparent 50%);
+      padding: 1.5rem 1rem 5rem 1rem;
+    }
+
+    .container {
+      width: 100%;
+      max-width: 860px;
+      display: flex;
+      flex-direction: column;
+      gap: 1.5rem;
+    }
+
+    /* =========================================================================
+       ADVERTISEMENT CONTAINERS (Banners & In-feed)
+       ========================================================================= */
+    .ad-banner-wrapper {
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.35rem;
+      position: relative;
+    }
+
+    .ad-disclaimer {
+      font-size: 0.68rem;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: #64748b;
+      font-weight: 700;
+    }
+
+    .ad-slot-box {
+      width: 100%;
+      min-height: 90px;
+      background: var(--ad-bg);
+      border: 1px dashed var(--ad-border);
+      border-radius: 0.85rem;
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.2s ease;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.25);
+    }
+
+    /* Mock Responsive Banner Ads */
+    .mock-ad-banner {
+      width: 100%;
+      padding: 0.85rem 1.25rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+      background: linear-gradient(135deg, rgba(30, 41, 59, 0.7) 0%, rgba(15, 23, 42, 0.9) 100%);
+      text-decoration: none;
+      color: inherit;
+      cursor: pointer;
+    }
+
+    .mock-ad-banner:hover {
+      background: linear-gradient(135deg, rgba(51, 65, 85, 0.8) 0%, rgba(30, 41, 59, 0.95) 100%);
+    }
+
+    .mock-ad-left {
+      display: flex;
+      align-items: center;
+      gap: 0.9rem;
+    }
+
+    .mock-ad-icon {
+      width: 44px;
+      height: 44px;
+      border-radius: 0.65rem;
+      background: linear-gradient(135deg, #6366f1, #06b6d4);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #fff;
+      font-size: 1.25rem;
+      flex-shrink: 0;
+      box-shadow: 0 4px 12px rgba(99, 102, 241, 0.4);
+    }
+
+    .mock-ad-texts {
+      display: flex;
+      flex-direction: column;
+      gap: 0.2rem;
+    }
+
+    .mock-ad-title {
+      font-size: 0.95rem;
+      font-weight: 700;
+      color: #f8fafc;
+      display: flex;
+      align-items: center;
+      gap: 0.45rem;
+    }
+
+    .mock-ad-badge {
+      font-size: 0.65rem;
+      background: rgba(99, 102, 241, 0.25);
+      border: 1px solid rgba(99, 102, 241, 0.4);
+      color: #a5b4fc;
+      padding: 0.1rem 0.35rem;
+      border-radius: 0.3rem;
+      text-transform: uppercase;
+      font-weight: 800;
+    }
+
+    .mock-ad-desc {
+      font-size: 0.8rem;
+      color: #94a3b8;
+    }
+
+    .mock-ad-cta {
+      padding: 0.55rem 1.15rem;
+      background: linear-gradient(135deg, #3b82f6, #6366f1);
+      color: #fff;
+      font-weight: 700;
+      font-size: 0.825rem;
+      border-radius: 0.55rem;
+      white-space: nowrap;
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+      box-shadow: 0 4px 12px rgba(59, 130, 246, 0.35);
+      flex-shrink: 0;
+      transition: transform 0.15s ease;
+    }
+
+    .mock-ad-cta:hover {
+      transform: scale(1.03);
+    }
+
+    /* Sticky Bottom Ad */
+    .sticky-bottom-ad {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      background: rgba(11, 15, 25, 0.95);
+      border-top: 1px solid rgba(255, 255, 255, 0.12);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      z-index: 99;
+      display: flex;
+      justify-content: center;
+      padding: 0.5rem 1rem;
+      box-shadow: 0 -10px 25px rgba(0, 0, 0, 0.6);
+      transition: transform 0.3s ease;
+    }
+
+    .sticky-bottom-ad.closed {
+      transform: translateY(110%);
+    }
+
+    .sticky-ad-inner {
+      width: 100%;
+      max-width: 860px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+      position: relative;
+    }
+
+    .sticky-close-btn {
+      position: absolute;
+      top: -12px;
+      right: 0px;
+      background: #1e293b;
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      color: #cbd5e1;
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.75rem;
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+
+    .sticky-close-btn:hover {
+      background: #ef4444;
+      color: #fff;
+    }
+
+    /* =========================================================================
+       HEADER
+       ========================================================================= */
+    .header {
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.65rem;
+    }
+
+    .brand-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      background: rgba(99, 102, 241, 0.15);
+      border: 1px solid rgba(99, 102, 241, 0.3);
+      color: #a5b4fc;
+      padding: 0.35rem 0.95rem;
+      border-radius: 9999px;
+      font-size: 0.8rem;
+      font-weight: 700;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+    }
+
+    .header h1 {
+      font-size: 2.45rem;
+      font-weight: 800;
+      letter-spacing: -0.025em;
+      background: linear-gradient(135deg, #ffffff 30%, #cbd5e1 70%, #818cf8 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .header p {
+      color: var(--text-muted);
+      font-size: 0.95rem;
+      max-width: 620px;
+      line-height: 1.5;
+    }
+
+    /* Platform Chips */
+    .platform-chips {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 0.45rem;
+      margin-top: 0.25rem;
+    }
+
+    .platform-chip {
+      font-size: 0.775rem;
+      font-weight: 600;
+      padding: 0.25rem 0.65rem;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      color: #cbd5e1;
+      display: flex;
+      align-items: center;
+      gap: 0.35rem;
+    }
+
+    .chip-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+    }
+
+    /* Card */
+    .card {
+      background: var(--card-bg);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border: 1px solid var(--card-border);
+      border-radius: 1.25rem;
+      padding: 1.75rem;
+      box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.5);
+    }
+
+    /* Detected Badge */
+    .detector-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 0.85rem;
+      min-height: 28px;
+    }
+
+    .detected-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.45rem;
+      padding: 0.25rem 0.75rem;
+      border-radius: 0.5rem;
+      font-size: 0.8rem;
+      font-weight: 700;
+      background: rgba(16, 185, 129, 0.15);
+      border: 1px solid rgba(16, 185, 129, 0.3);
+      color: #34d399;
+      opacity: 0;
+      transform: translateY(-4px);
+      transition: all 0.2s ease;
+    }
+
+    .detected-badge.active {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* Input form */
+    .input-group {
+      display: flex;
+      gap: 0.75rem;
+      margin-bottom: 1.25rem;
+    }
+
+    .url-wrapper {
+      position: relative;
+      flex: 1;
+      display: flex;
+      align-items: center;
+    }
+
+    .url-input {
+      width: 100%;
+      padding: 0.95rem 4rem 0.95rem 1.15rem;
+      background: var(--input-bg);
+      border: 1.5px solid rgba(255, 255, 255, 0.1);
+      border-radius: 0.85rem;
+      color: #fff;
+      font-size: 0.975rem;
+      outline: none;
+      transition: all 0.2s ease;
+    }
+
+    .url-input:focus {
+      border-color: var(--primary-accent);
+      box-shadow: 0 0 0 3px var(--primary-glow);
+    }
+
+    .paste-btn {
+      position: absolute;
+      right: 0.6rem;
+      background: rgba(255, 255, 255, 0.1);
+      border: none;
+      color: var(--text-muted);
+      padding: 0.45rem 0.75rem;
+      border-radius: 0.55rem;
+      font-size: 0.8rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+
+    .paste-btn:hover {
+      background: rgba(255, 255, 255, 0.18);
+      color: #fff;
+    }
+
+    .fetch-btn {
+      padding: 0.95rem 1.35rem;
+      background: rgba(255, 255, 255, 0.08);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      color: #f3f4f6;
+      border-radius: 0.85rem;
+      font-weight: 600;
+      font-size: 0.925rem;
+      cursor: pointer;
+      transition: all 0.2s;
+      white-space: nowrap;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .fetch-btn:hover {
+      background: rgba(255, 255, 255, 0.15);
+      border-color: rgba(255, 255, 255, 0.25);
+    }
+
+    .fetch-btn:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+
+    /* Video Preview & Interactive Player Card */
+    .video-preview {
+      display: none;
+      background: rgba(15, 23, 42, 0.65);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 1rem;
+      padding: 1.25rem;
+      flex-direction: column;
+      gap: 1rem;
+      margin-bottom: 1.25rem;
+      animation: fadeIn 0.3s ease;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(6px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .preview-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 1rem;
+    }
+
+    .meta-content {
+      display: flex;
+      flex-direction: column;
+      gap: 0.35rem;
+      overflow: hidden;
+    }
+
+    .meta-title {
+      font-size: 1.05rem;
+      font-weight: 700;
+      color: #fff;
+      line-height: 1.35;
+    }
+
+    .meta-channel {
+      font-size: 0.875rem;
+      color: var(--text-muted);
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .meta-stats {
+      font-size: 0.8rem;
+      color: #6b7280;
+    }
+
+    /* Interactive Player Frame */
+    .player-container {
+      width: 100%;
+      border-radius: 0.75rem;
+      overflow: hidden;
+      background: #000;
+      position: relative;
+      aspect-ratio: 16 / 9;
+      max-height: 420px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .player-container iframe,
+    .player-container video {
+      width: 100%;
+      height: 100%;
+      border: none;
+      object-fit: contain;
+    }
+
+    .player-container img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    /* Player Interactive Quick Controls */
+    .player-clip-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 0.65rem;
+      background: rgba(17, 24, 39, 0.7);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 0.75rem;
+      padding: 0.65rem 0.95rem;
+    }
+
+    .current-time-indicator {
+      display: flex;
+      align-items: center;
+      gap: 0.45rem;
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: #cbd5e1;
+    }
+
+    .current-time-val {
+      font-family: monospace;
+      font-size: 0.95rem;
+      color: #38bdf8;
+      font-weight: 700;
+      background: rgba(56, 189, 248, 0.12);
+      padding: 0.15rem 0.45rem;
+      border-radius: 0.35rem;
+    }
+
+    .quick-mark-btn-group {
+      display: flex;
+      gap: 0.5rem;
+    }
+
+    .btn-mark {
+      background: rgba(99, 102, 241, 0.18);
+      border: 1px solid rgba(99, 102, 241, 0.35);
+      color: #e0e7ff;
+      padding: 0.4rem 0.75rem;
+      border-radius: 0.5rem;
+      font-size: 0.8rem;
+      font-weight: 700;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
+      transition: all 0.15s ease;
+    }
+
+    .btn-mark:hover {
+      background: rgba(99, 102, 241, 0.35);
+      border-color: var(--primary-accent);
+      color: #fff;
+      transform: translateY(-1px);
+    }
+
+    .btn-preview-clip {
+      background: rgba(16, 185, 129, 0.18);
+      border: 1px solid rgba(16, 185, 129, 0.35);
+      color: #6ee7b7;
+    }
+
+    .btn-preview-clip:hover {
+      background: rgba(16, 185, 129, 0.3);
+      border-color: var(--accent-green);
+      color: #fff;
+    }
+
+    /* Clipping Box Accordion */
+    .clip-section {
+      background: rgba(17, 24, 39, 0.5);
+      border: 1px dashed rgba(99, 102, 241, 0.35);
+      border-radius: 0.95rem;
+      padding: 0.85rem 1.15rem;
+      margin-bottom: 1.25rem;
+      transition: all 0.25s ease;
+    }
+
+    .clip-section.active {
+      border-style: solid;
+      border-color: var(--primary-accent);
+      background: rgba(99, 102, 241, 0.08);
+    }
+
+    .clip-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      cursor: pointer;
+      user-select: none;
+    }
+
+    .clip-title-wrap {
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+    }
+
+    .clip-title {
+      font-size: 0.925rem;
+      font-weight: 700;
+      color: #e2e8f0;
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+    }
+
+    .clip-subtitle {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+    }
+
+    .toggle-switch {
+      position: relative;
+      width: 44px;
+      height: 24px;
+      cursor: pointer;
+    }
+
+    .toggle-switch input {
+      opacity: 0;
+      width: 0;
+      height: 0;
+    }
+
+    .slider-track {
+      position: absolute;
+      cursor: pointer;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background-color: rgba(255, 255, 255, 0.15);
+      transition: .25s;
+      border-radius: 24px;
+    }
+
+    .slider-track:before {
+      position: absolute;
+      content: "";
+      height: 18px;
+      width: 18px;
+      left: 3px;
+      bottom: 3px;
+      background-color: white;
+      transition: .25s;
+      border-radius: 50%;
+    }
+
+    .toggle-switch input:checked + .slider-track {
+      background-color: var(--primary-accent);
+    }
+
+    .toggle-switch input:checked + .slider-track:before {
+      transform: translateX(20px);
+    }
+
+    .clip-body {
+      display: none;
+      margin-top: 1rem;
+      padding-top: 0.85rem;
+      border-top: 1px solid rgba(255, 255, 255, 0.08);
+      animation: fadeIn 0.25s ease;
+    }
+
+    .clip-inputs-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr auto;
+      gap: 0.85rem;
+      align-items: end;
+    }
+
+    .clip-input-field {
+      width: 100%;
+      padding: 0.75rem 0.95rem;
+      background: var(--input-bg);
+      border: 1.5px solid rgba(255, 255, 255, 0.12);
+      border-radius: 0.65rem;
+      color: #fff;
+      font-size: 0.95rem;
+      font-weight: 600;
+      outline: none;
+      font-family: monospace;
+      letter-spacing: 0.05em;
+    }
+
+    .clip-input-field:focus {
+      border-color: var(--primary-accent);
+    }
+
+    .clip-duration-tag {
+      padding: 0.75rem 0.95rem;
+      background: rgba(99, 102, 241, 0.15);
+      border: 1px solid rgba(99, 102, 241, 0.3);
+      border-radius: 0.65rem;
+      font-size: 0.825rem;
+      font-weight: 700;
+      color: #a5b4fc;
+      white-space: nowrap;
+      display: flex;
+      align-items: center;
+      gap: 0.35rem;
+    }
+
+    /* Controls (Quality + Download) */
+    .controls-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1rem;
+      align-items: end;
+    }
+
+    .control-group {
+      display: flex;
+      flex-direction: column;
+      gap: 0.4rem;
+    }
+
+    .control-label {
+      font-size: 0.825rem;
+      font-weight: 600;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+
+    .select-input {
+      padding: 0.85rem 1rem;
+      background: var(--input-bg);
+      border: 1.5px solid rgba(255, 255, 255, 0.1);
+      border-radius: 0.75rem;
+      color: #fff;
+      font-size: 0.95rem;
+      font-weight: 500;
+      outline: none;
+      cursor: pointer;
+    }
+
+    .select-input:focus {
+      border-color: var(--primary-accent);
+    }
+
+    .select-input option {
+      background: #1a1d29;
+      color: #fff;
+      padding: 0.5rem;
+    }
+
+    .download-btn {
+      padding: 0.85rem 1.25rem;
+      background: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%);
+      color: #fff;
+      border: none;
+      border-radius: 0.75rem;
+      font-size: 1rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.6rem;
+      box-shadow: 0 4px 15px var(--primary-glow);
+    }
+
+    .download-btn:hover {
+      background: linear-gradient(135deg, #7175f8 0%, #5850ec 100%);
+      transform: translateY(-1px);
+      box-shadow: 0 6px 20px rgba(99, 102, 241, 0.5);
+    }
+
+    .download-btn:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+      transform: none;
+      box-shadow: none;
+    }
+
+    /* Active Downloads Section */
+    .section-title {
+      font-size: 1.15rem;
+      font-weight: 700;
+      color: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 1rem;
+    }
+
+    .active-tasks-list {
+      display: flex;
+      flex-direction: column;
+      gap: 0.85rem;
+    }
+
+    .task-item {
+      background: rgba(17, 24, 39, 0.6);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 0.95rem;
+      padding: 1.1rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.65rem;
+    }
+
+    .task-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 0.75rem;
+    }
+
+    .task-title-wrap {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      overflow: hidden;
+    }
+
+    .task-platform-tag {
+      font-size: 0.7rem;
+      font-weight: 700;
+      padding: 0.15rem 0.45rem;
+      border-radius: 0.35rem;
+      background: rgba(255, 255, 255, 0.1);
+      color: #e2e8f0;
+      flex-shrink: 0;
+    }
+
+    .task-clip-badge {
+      font-size: 0.7rem;
+      font-weight: 700;
+      padding: 0.15rem 0.5rem;
+      border-radius: 0.35rem;
+      background: rgba(245, 158, 11, 0.2);
+      border: 1px solid rgba(245, 158, 11, 0.4);
+      color: #fbbf24;
+      flex-shrink: 0;
+    }
+
+    .task-title {
+      font-size: 0.925rem;
+      font-weight: 600;
+      color: #fff;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .task-status-badge {
+      font-size: 0.775rem;
+      font-weight: 700;
+      padding: 0.2rem 0.6rem;
+      border-radius: 0.4rem;
+      text-transform: uppercase;
+      letter-spacing: 0.03em;
+    }
+
+    .status-downloading, .status-starting {
+      background: rgba(6, 182, 212, 0.15);
+      color: #22d3ee;
+      border: 1px solid rgba(6, 182, 212, 0.3);
+    }
+
+    .status-processing {
+      background: rgba(245, 158, 11, 0.15);
+      color: #fbbf24;
+      border: 1px solid rgba(245, 158, 11, 0.3);
+    }
+
+    .status-completed {
+      background: rgba(16, 185, 129, 0.15);
+      color: #34d399;
+      border: 1px solid rgba(16, 185, 129, 0.3);
+    }
+
+    .status-error {
+      background: rgba(239, 68, 68, 0.15);
+      color: #f87171;
+      border: 1px solid rgba(239, 68, 68, 0.3);
+    }
+
+    .progress-bar-wrap {
+      width: 100%;
+      height: 8px;
+      background: rgba(255, 255, 255, 0.08);
+      border-radius: 999px;
+      overflow: hidden;
+    }
+
+    .progress-bar-fill {
+      height: 100%;
+      background: linear-gradient(90deg, #6366f1, #06b6d4, #10b981);
+      border-radius: 999px;
+      width: 0%;
+      transition: width 0.25s ease;
+    }
+
+    .task-footer {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 0.825rem;
+      color: var(--text-muted);
+      font-feature-settings: "tnum";
+      font-variant-numeric: tabular-nums;
+    }
+
+    .speed-tag {
+      color: #38bdf8;
+      font-weight: 600;
+    }
+
+    .percent-tag {
+      font-weight: 700;
+      color: #fff;
+    }
+
+    .eta-tag {
+      color: #cbd5e1;
+    }
+
+    /* Completed files list */
+    .library-card {
+      margin-top: 0.5rem;
+    }
+
+    .library-actions {
+      display: flex;
+      gap: 0.6rem;
+    }
+
+    .btn-secondary {
+      background: rgba(255, 255, 255, 0.08);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      color: #e5e7eb;
+      padding: 0.45rem 0.85rem;
+      border-radius: 0.55rem;
+      font-size: 0.825rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.15s ease;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+    }
+
+    .btn-secondary:hover {
+      background: rgba(255, 255, 255, 0.15);
+      color: #fff;
+    }
+
+    .file-list {
+      display: flex;
+      flex-direction: column;
+      gap: 0.6rem;
+      max-height: 280px;
+      overflow-y: auto;
+      padding-right: 0.25rem;
+    }
+
+    .file-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0.75rem 0.95rem;
+      background: rgba(17, 24, 39, 0.5);
+      border: 1px solid rgba(255, 255, 255, 0.05);
+      border-radius: 0.7rem;
+      transition: background 0.15s;
+    }
+
+    .file-item:hover {
+      background: rgba(17, 24, 39, 0.8);
+    }
+
+    .file-info {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      overflow: hidden;
+    }
+
+    .file-icon {
+      width: 34px;
+      height: 34px;
+      border-radius: 0.45rem;
+      background: rgba(99, 102, 241, 0.18);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #a5b4fc;
+      font-size: 0.75rem;
+      font-weight: 800;
+      flex-shrink: 0;
+    }
+
+    .file-icon.audio {
+      background: rgba(16, 185, 129, 0.15);
+      color: #34d399;
+    }
+
+    .file-name {
+      font-size: 0.875rem;
+      font-weight: 500;
+      color: #f3f4f6;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      max-width: 440px;
+    }
+
+    .file-size {
+      font-size: 0.775rem;
+      color: var(--text-muted);
+    }
+
+    .file-actions {
+      display: flex;
+      gap: 0.4rem;
+    }
+
+    .empty-msg {
+      text-align: center;
+      color: var(--text-muted);
+      font-size: 0.875rem;
+      padding: 1.5rem;
+    }
+
+    /* Toast */
+    .toast {
+      position: fixed;
+      bottom: 4.5rem;
+      right: 1.5rem;
+      background: #1f2937;
+      color: #fff;
+      padding: 0.85rem 1.25rem;
+      border-radius: 0.75rem;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.5);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      display: none;
+      align-items: center;
+      gap: 0.6rem;
+      font-size: 0.9rem;
+      z-index: 1000;
+    }
+
+    /* =========================================================================
+       EXCLUSIVE: AD-WATCHING & DOWNLOAD PROGRESS MODAL
+       ========================================================================= */
+    .ad-modal-backdrop {
+      position: fixed;
+      inset: 0;
+      background: rgba(4, 7, 14, 0.88);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      z-index: 9999;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 1rem;
+      animation: modalFadeIn 0.25s ease forwards;
+    }
+
+    @keyframes modalFadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+
+    .ad-modal-card {
+      width: 100%;
+      max-width: 640px;
+      background: #111827;
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      border-radius: 1.25rem;
+      box-shadow: 0 25px 60px -15px rgba(0, 0, 0, 0.8), 0 0 40px rgba(99, 102, 241, 0.2);
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      animation: modalSlideUp 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    }
+
+    @keyframes modalSlideUp {
+      from { opacity: 0; transform: translateY(20px) scale(0.97); }
+      to { opacity: 1; transform: translateY(0) scale(1); }
+    }
+
+    .ad-modal-header {
+      padding: 1.15rem 1.35rem;
+      background: rgba(17, 24, 39, 0.9);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+    }
+
+    .ad-modal-target-info {
+      display: flex;
+      align-items: center;
+      gap: 0.85rem;
+      overflow: hidden;
+    }
+
+    .ad-modal-thumb {
+      width: 48px;
+      height: 48px;
+      border-radius: 0.55rem;
+      object-fit: cover;
+      background: #0f172a;
+      flex-shrink: 0;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .ad-modal-text-wrap {
+      display: flex;
+      flex-direction: column;
+      gap: 0.2rem;
+      overflow: hidden;
+    }
+
+    .ad-modal-title {
+      font-size: 0.95rem;
+      font-weight: 700;
+      color: #fff;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .ad-modal-badges {
+      display: flex;
+      align-items: center;
+      gap: 0.45rem;
+      flex-wrap: wrap;
+    }
+
+    .ad-modal-tag {
+      font-size: 0.7rem;
+      font-weight: 700;
+      padding: 0.15rem 0.45rem;
+      border-radius: 0.35rem;
+      background: rgba(99, 102, 241, 0.2);
+      color: #a5b4fc;
+      border: 1px solid rgba(99, 102, 241, 0.3);
+    }
+
+    .ad-modal-close-btn {
+      background: rgba(255, 255, 255, 0.08);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      color: #94a3b8;
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: all 0.15s ease;
+      flex-shrink: 0;
+    }
+
+    .ad-modal-close-btn:hover {
+      background: rgba(255, 255, 255, 0.2);
+      color: #fff;
+    }
+
+    /* Central Ad Video / Display Stage */
+    .ad-modal-stage {
+      padding: 1.25rem 1.35rem;
+      background: #0b0f19;
+      display: flex;
+      flex-direction: column;
+      gap: 0.85rem;
+    }
+
+    .ad-stage-badge-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .ad-stage-label {
+      font-size: 0.7rem;
+      font-weight: 800;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: #64748b;
+      display: flex;
+      align-items: center;
+      gap: 0.35rem;
+    }
+
+    .ad-timer-badge {
+      font-size: 0.75rem;
+      font-weight: 700;
+      color: #38bdf8;
+      background: rgba(56, 189, 248, 0.12);
+      border: 1px solid rgba(56, 189, 248, 0.25);
+      padding: 0.2rem 0.6rem;
+      border-radius: 999px;
+      display: flex;
+      align-items: center;
+      gap: 0.35rem;
+    }
+
+    /* Interactive Showcase Ad Player / Visual */
+    .ad-video-frame {
+      width: 100%;
+      height: 230px;
+      background: #000;
+      border-radius: 0.85rem;
+      overflow: hidden;
+      position: relative;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .ad-interactive-card {
+      width: 100%;
+      height: 100%;
+      position: relative;
+      background-size: cover;
+      background-position: center;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      padding: 1.25rem;
+      color: #fff;
+    }
+
+    .ad-card-overlay {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(180deg, rgba(15, 23, 42, 0.4) 0%, rgba(15, 23, 42, 0.95) 100%);
+      z-index: 1;
+    }
+
+    .ad-card-content {
+      position: relative;
+      z-index: 2;
+      display: flex;
+      flex-direction: column;
+      height: 100%;
+      justify-content: space-between;
+    }
+
+    .ad-sponsor-pill {
+      align-self: flex-start;
+      background: rgba(0, 0, 0, 0.6);
+      backdrop-filter: blur(8px);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      padding: 0.3rem 0.65rem;
+      border-radius: 999px;
+      font-size: 0.75rem;
+      font-weight: 700;
+      color: #f1f5f9;
+      display: flex;
+      align-items: center;
+      gap: 0.35rem;
+    }
+
+    .ad-main-pitch {
+      display: flex;
+      flex-direction: column;
+      gap: 0.35rem;
+    }
+
+    .ad-pitch-title {
+      font-size: 1.35rem;
+      font-weight: 800;
+      color: #fff;
+      line-height: 1.2;
+    }
+
+    .ad-pitch-desc {
+      font-size: 0.85rem;
+      color: #cbd5e1;
+      max-width: 440px;
+      line-height: 1.4;
+    }
+
+    .ad-action-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 0.75rem;
+      margin-top: 0.5rem;
+    }
+
+    .ad-visit-btn {
+      padding: 0.6rem 1.2rem;
+      background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+      color: #fff;
+      text-decoration: none;
+      font-weight: 700;
+      font-size: 0.85rem;
+      border-radius: 0.55rem;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      transition: all 0.15s ease;
+      box-shadow: 0 4px 14px rgba(16, 185, 129, 0.4);
+    }
+
+    .ad-visit-btn:hover {
+      transform: translateY(-1px);
+      background: linear-gradient(135deg, #34d399 0%, #10b981 100%);
+    }
+
+    .ad-sponsor-brand {
+      font-size: 0.75rem;
+      color: #94a3b8;
+      font-weight: 600;
+    }
+
+    /* Modal Progress Section (Directly under the Ad) */
+    .ad-modal-progress-section {
+      padding: 1.25rem 1.35rem 1.5rem 1.35rem;
+      background: rgba(17, 24, 39, 0.95);
+      border-top: 1px solid rgba(255, 255, 255, 0.08);
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+    }
+
+    .modal-progress-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .modal-status-text {
+      font-size: 0.875rem;
+      font-weight: 700;
+      color: #e2e8f0;
+      display: flex;
+      align-items: center;
+      gap: 0.45rem;
+    }
+
+    .modal-status-spinner {
+      width: 14px;
+      height: 14px;
+      border: 2px solid rgba(99, 102, 241, 0.3);
+      border-top-color: #818cf8;
+      border-radius: 50%;
+      animation: spin 0.75s linear infinite;
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
+    .modal-percent-text {
+      font-size: 1.15rem;
+      font-weight: 800;
+      color: #38bdf8;
+      font-feature-settings: "tnum";
+    }
+
+    .modal-progress-bar-wrap {
+      width: 100%;
+      height: 10px;
+      background: rgba(255, 255, 255, 0.08);
+      border-radius: 999px;
+      overflow: hidden;
+      border: 1px solid rgba(255, 255, 255, 0.05);
+    }
+
+    .modal-progress-bar-fill {
+      height: 100%;
+      background: linear-gradient(90deg, #6366f1, #06b6d4, #10b981);
+      border-radius: 999px;
+      width: 0%;
+      box-shadow: 0 0 14px rgba(6, 182, 212, 0.6);
+      transition: width 0.25s ease;
+    }
+
+    .modal-progress-stats {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      font-feature-settings: "tnum";
+    }
+
+    /* Completion Actions in Modal */
+    .ad-modal-completed-box {
+      display: none;
+      flex-direction: column;
+      gap: 0.75rem;
+      margin-top: 0.5rem;
+      animation: fadeIn 0.3s ease;
+    }
+
+    .modal-download-primary-btn {
+      width: 100%;
+      padding: 0.95rem 1.25rem;
+      background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+      color: #fff;
+      text-decoration: none;
+      font-weight: 800;
+      font-size: 1.05rem;
+      border-radius: 0.75rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.6rem;
+      box-shadow: 0 4px 20px rgba(16, 185, 129, 0.45);
+      animation: pulseGreen 1.8s infinite;
+      cursor: pointer;
+    }
+
+    @keyframes pulseGreen {
+      0%, 100% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.5); }
+      50% { box-shadow: 0 0 0 10px rgba(16, 185, 129, 0); }
+    }
+
+    .modal-download-primary-btn:hover {
+      background: linear-gradient(135deg, #34d399 0%, #10b981 100%);
+      transform: translateY(-1px);
+    }
+
+    .modal-download-secondary-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .modal-sub-link {
+      color: #94a3b8;
+      font-size: 0.825rem;
+      text-decoration: none;
+      cursor: pointer;
+    }
+
+    .modal-sub-link:hover {
+      color: #fff;
+      text-decoration: underline;
+    }
+
+    @media (max-width: 640px) {
+      body {
+        padding: 1rem 0.75rem 5.5rem 0.75rem;
+      }
+      .controls-row, .clip-inputs-row {
+        grid-template-columns: 1fr;
+      }
+      .player-clip-bar {
+        flex-direction: column;
+        align-items: stretch;
+      }
+      .quick-mark-btn-group {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+      }
+      .file-name {
+        max-width: 180px;
+      }
+      .input-group {
+        flex-direction: column;
+      }
+      .fetch-btn {
+        width: 100%;
+        justify-content: center;
+      }
+      .mock-ad-banner {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+      .mock-ad-cta {
+        width: 100%;
+        justify-content: center;
+      }
+      .ad-video-frame {
+        height: 200px;
+      }
+      .ad-pitch-title {
+        font-size: 1.1rem;
+      }
+    }
+  </style>
+
+  <!-- YouTube IFrame Player API -->
+  <script src="https://www.youtube.com/iframe_api"></script>
+</head>
+<body>
+
+  <div class="container">
+    
+    <!-- =====================================================================
+         TOP LEADERBOARD AD BANNER (728x90 desktop / responsive mobile)
+         ===================================================================== -->
+    <div class="ad-banner-wrapper" id="topAdSlot">
+      <span class="ad-disclaimer">Advertisement</span>
+      <div class="ad-slot-box">
+        <!-- Google AdSense Unit Placeholder -->
+        <!-- Replace the content below with: <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-XXXXX" data-ad-slot="XXXXX" data-ad-format="auto" data-full-width-responsive="true"></ins><script>(adsbygoogle = window.adsbygoogle || []).push({});</script> -->
+        <a href="https://github.com" target="_blank" rel="noopener noreferrer" class="mock-ad-banner" id="topMockAd">
+          <div class="mock-ad-left">
+            <div class="mock-ad-icon">⚡</div>
+            <div class="mock-ad-texts">
+              <div class="mock-ad-title">
+                NordVPN Extreme Security
+                <span class="mock-ad-badge">Sponsored</span>
+              </div>
+              <div class="mock-ad-desc">Protect your streaming & browsing with 70% off + 3 extra months free.</div>
+            </div>
+          </div>
+          <div class="mock-ad-cta">
+            <span>Get Protected</span>
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+          </div>
+        </a>
+      </div>
+    </div>
+
+    <!-- Header -->
+    <header class="header">
+      <div class="brand-badge">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2" ry="2"/></svg>
+        Multi-Media Downloader
+      </div>
+      <h1>Universal Multi-Media Downloader</h1>
+      <p>Download almost any video, audio, reel, short, or clip from virtually any website or platform in top quality.</p>
+      
+      <!-- Supported platform chips -->
+      <div class="platform-chips">
+        <span class="platform-chip"><span class="chip-dot" style="background:#ff0033;"></span>YouTube</span>
+        <span class="platform-chip"><span class="chip-dot" style="background:#00f2fe;"></span>TikTok</span>
+        <span class="platform-chip"><span class="chip-dot" style="background:#e1306c;"></span>Instagram</span>
+        <span class="platform-chip"><span class="chip-dot" style="background:#1da1f2;"></span>X / Twitter</span>
+        <span class="platform-chip"><span class="chip-dot" style="background:#1877f2;"></span>Facebook</span>
+        <span class="platform-chip"><span class="chip-dot" style="background:#ff4500;"></span>Reddit</span>
+        <span class="platform-chip"><span class="chip-dot" style="background:#9146ff;"></span>Twitch</span>
+        <span class="platform-chip"><span class="chip-dot" style="background:#1ab7ea;"></span>Vimeo</span>
+        <span class="platform-chip"><span class="chip-dot" style="background:#ff5500;"></span>SoundCloud</span>
+        <span class="platform-chip"><span class="chip-dot" style="background:#10b981;"></span>+1,000 Any Sites</span>
+      </div>
+    </header>
+
+    <!-- Main Card -->
+    <main class="card">
+      <div class="detector-bar">
+        <span class="control-label">Media Link</span>
+        <div class="detected-badge" id="detectedBadge">
+          <span class="chip-dot" id="detectedDot" style="background:#10b981;"></span>
+          <span id="detectedName">Auto Detect</span>
+        </div>
+      </div>
+
+      <div class="input-group">
+        <div class="url-wrapper">
+          <input type="text" id="videoUrl" class="url-input" placeholder="Paste link (YouTube, TikTok, Instagram, Twitter/X, Reddit, or any video link...)" autofocus autocomplete="off" />
+          <button type="button" class="paste-btn" id="pasteBtn" title="Paste from clipboard">Paste</button>
+        </div>
+        <button type="button" class="fetch-btn" id="fetchBtn">
+          <span>Inspect Video</span>
+        </button>
+      </div>
+
+      <!-- Video Details & Interactive Preview Player -->
+      <div class="video-preview" id="videoPreview">
+        <div class="preview-header">
+          <div class="meta-content">
+            <h3 class="meta-title" id="previewTitle">Media Title</h3>
+            <p class="meta-channel" id="previewChannel">Channel Name</p>
+            <p class="meta-stats" id="previewViews">0 views • 00:00</p>
+          </div>
+        </div>
+
+        <!-- Embedded Interactive Player -->
+        <div class="player-container" id="playerContainer">
+          <img id="previewThumb" src="" alt="Thumbnail" />
+        </div>
+
+        <!-- Player Quick Mark Bar (Live scrubbing helper) -->
+        <div class="player-clip-bar" id="playerClipBar">
+          <div class="current-time-indicator">
+            <span>Current Position:</span>
+            <span class="current-time-val" id="currentPlaybackDisplay">00:00</span>
+          </div>
+          <div class="quick-mark-btn-group">
+            <button type="button" class="btn-mark" id="setStartBtn" title="Set current player playback timestamp as Start time">
+              📍 Set as Start
+            </button>
+            <button type="button" class="btn-mark" id="setEndBtn" title="Set current player playback timestamp as End time">
+              📍 Set as End
+            </button>
+            <button type="button" class="btn-mark btn-preview-clip" id="previewClipBtn" title="Play only the selected clip range in the player">
+              ▶️ Test Clip
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Video Clipping Section -->
+      <div class="clip-section" id="clipSection">
+        <div class="clip-header" id="clipToggleHeader">
+          <div class="clip-title-wrap">
+            <span class="clip-title">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="6" cy="6" r="3"/><circle cx="6" cy="18" r="3"/><line x1="20" y1="4" x2="8.12" y2="15.88"/><line x1="14.47" y1="14.48" x2="20" y2="20"/><line x1="8.12" y1="8.12" x2="12" y2="12"/></svg>
+              Clip Section (MP4)
+            </span>
+            <span class="clip-subtitle">— Cut & download only a specific part</span>
+          </div>
+          <label class="toggle-switch">
+            <input type="checkbox" id="clipToggle">
+            <span class="slider-track"></span>
+          </label>
+        </div>
+
+        <div class="clip-body" id="clipBody">
+          <div class="clip-inputs-row">
+            <div class="control-group">
+              <label class="control-label" for="clipStartTime">Start Time (MM:SS)</label>
+              <input type="text" id="clipStartTime" class="clip-input-field" placeholder="00:00" value="00:00" />
+            </div>
+
+            <div class="control-group">
+              <label class="control-label" for="clipEndTime">End Time (MM:SS)</label>
+              <input type="text" id="clipEndTime" class="clip-input-field" placeholder="01:30" value="01:00" />
+            </div>
+
+            <div class="clip-duration-tag" id="clipDurationDisplay">
+              <span>Duration: 1m 00s</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Controls -->
+      <div class="controls-row">
+        <div class="control-group">
+          <label class="control-label" for="qualitySelect">Choose Quality / Format</label>
+          <select id="qualitySelect" class="select-input">
+            <option value="best" selected>🌟 Best Available Quality (Auto)</option>
+            <option value="1080">🎬 1080p Full HD (MP4)</option>
+            <option value="720">📺 720p HD (MP4)</option>
+            <option value="480">📱 480p SD (MP4)</option>
+            <option value="360">⚡ 360p Low (MP4)</option>
+            <option value="audio">🎵 Best Audio Only (MP3)</option>
+          </select>
+        </div>
+
+        <button type="button" class="download-btn" id="downloadBtn">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+          <span id="downloadBtnText">Download Now</span>
+        </button>
+      </div>
+    </main>
+
+    <!-- =====================================================================
+         MID-PAGE IN-CONTENT AD BANNER
+         ===================================================================== -->
+    <div class="ad-banner-wrapper" id="midAdSlot">
+      <span class="ad-disclaimer">Sponsored Partner</span>
+      <div class="ad-slot-box">
+        <a href="https://github.com" target="_blank" rel="noopener noreferrer" class="mock-ad-banner">
+          <div class="mock-ad-left">
+            <div class="mock-ad-icon" style="background: linear-gradient(135deg, #10b981, #06b6d4);">☁️</div>
+            <div class="mock-ad-texts">
+              <div class="mock-ad-title">
+                CloudStorage Ultra: 10TB Free Backup
+                <span class="mock-ad-badge" style="background: rgba(16, 185, 129, 0.2); color: #6ee7b7; border-color: rgba(16, 185, 129, 0.4);">Verified</span>
+              </div>
+              <div class="mock-ad-desc">Store your 4K clips, MP3s, and files with ultra-fast sync & zero limits.</div>
+            </div>
+          </div>
+          <div class="mock-ad-cta" style="background: linear-gradient(135deg, #10b981, #059669);">
+            <span>Claim 10TB</span>
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+          </div>
+        </a>
+      </div>
+    </div>
+
+    <!-- Active Tasks Progress -->
+    <section class="card" id="activeTasksSection" style="display: none;">
+      <div class="section-title">
+        <span>Active Downloads</span>
+      </div>
+      <div class="active-tasks-list" id="activeTasksList">
+        <!-- Rendered via JS -->
+      </div>
+    </section>
+
+    <!-- Downloaded Files Library -->
+    <section class="card library-card">
+      <div class="section-title">
+        <span>Downloaded Files</span>
+        <div class="library-actions">
+          <button type="button" class="btn-secondary" id="refreshFilesBtn" title="Refresh files list">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67"/></svg>
+            Refresh
+          </button>
+          <button type="button" class="btn-secondary" id="openFolderBtn" title="Open storage directory">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg>
+            Storage Folder
+          </button>
+        </div>
+      </div>
+      <div class="file-list" id="fileList">
+        <div class="empty-msg">No downloads yet. Files you download will appear here.</div>
+      </div>
+    </section>
+  </div>
+
+  <!-- =========================================================================
+       EXCLUSIVE: DEDICATED AD & LIVE PROGRESS OVERLAY MODAL
+       This provides the core user requirement: "download progress bar while they are watching the ads"
+       ========================================================================= -->
+  <div class="ad-modal-backdrop" id="adModalBackdrop">
+    <div class="ad-modal-card">
+      
+      <!-- Modal Header -->
+      <div class="ad-modal-header">
+        <div class="ad-modal-target-info">
+          <img class="ad-modal-thumb" id="adModalThumb" src="" alt="Thumbnail" />
+          <div class="ad-modal-text-wrap">
+            <div class="ad-modal-title" id="adModalTitle">Downloading Media...</div>
+            <div class="ad-modal-badges">
+              <span class="ad-modal-tag" id="adModalPlatformTag">Media</span>
+              <span class="ad-modal-tag" id="adModalQualityTag" style="background: rgba(6, 182, 212, 0.2); color: #67e8f9; border-color: rgba(6, 182, 212, 0.3);">Best Quality</span>
+            </div>
+          </div>
+        </div>
+        <button type="button" class="ad-modal-close-btn" id="adModalCloseBtn" title="Minimize to background">✕</button>
+      </div>
+
+      <!-- Modal Sponsor / Video Ad Stage -->
+      <div class="ad-modal-stage">
+        <div class="ad-stage-badge-row">
+          <div class="ad-stage-label">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 14H9V8h2v8zm4 0h-2V8h2v8z"/></svg>
+            Sponsored Video Ad
+          </div>
+          <div class="ad-timer-badge" id="adTimerBadge">
+            <span>⏱️ Watching Sponsor</span>
+          </div>
+        </div>
+
+        <div class="ad-video-frame" id="adVideoFrame">
+          <div class="ad-interactive-card" id="adInteractiveCard" style="background-image: url('https://images.unsplash.com/photo-1550751827-4bd374c3f58b?auto=format&fit=crop&w=900&q=80');">
+            <div class="ad-card-overlay"></div>
+            <div class="ad-card-content">
+              <div class="ad-sponsor-pill">
+                <span class="chip-dot" style="background:#10b981;"></span>
+                <span>CyberGuard Pro VPN</span>
+              </div>
+              <div class="ad-main-pitch">
+                <h4 class="ad-pitch-title">Download Fast. Stay Anonymous.</h4>
+                <p class="ad-pitch-desc">Military-grade 256-bit AES encryption with zero logs and unlimited gigabit bandwidth worldwide.</p>
+              </div>
+              <div class="ad-action-row">
+                <a href="https://github.com" target="_blank" rel="noopener noreferrer" class="ad-visit-btn">
+                  <span>Visit Sponsor</span>
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+                </a>
+                <span class="ad-sponsor-brand">ad · 100% Verified</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Real-time Download Progress Section Inside Ad Modal -->
+      <div class="ad-modal-progress-section">
+        <div class="modal-progress-header">
+          <div class="modal-status-text" id="modalStatusText">
+            <span class="modal-status-spinner" id="modalStatusSpinner"></span>
+            <span id="modalStatusLabel">Connecting to video source...</span>
+          </div>
+          <div class="modal-percent-text" id="modalPercent">0%</div>
+        </div>
+
+        <!-- Live Glowing Progress Bar -->
+        <div class="modal-progress-bar-wrap">
+          <div class="modal-progress-bar-fill" id="modalProgressBar"></div>
+        </div>
+
+        <div class="modal-progress-stats">
+          <span id="modalSpeed">Speed: Calculating...</span>
+          <span id="modalEta">ETA: --:--</span>
+        </div>
+
+        <!-- Completion Box: Appears right when download reaches 100% -->
+        <div class="ad-modal-completed-box" id="adModalCompletedBox">
+          <a href="#" class="modal-download-primary-btn" id="modalDownloadFileBtn" download>
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+            <span>Save File to Device (Download)</span>
+          </a>
+          <div class="modal-download-secondary-row">
+            <span class="modal-sub-link" id="modalCloseCompletedLink">Close Window</span>
+            <span class="modal-sub-link" id="modalDownloadAnotherLink">Download Another Video</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- =========================================================================
+       STICKY BOTTOM BANNER AD (Can be minimized by user)
+       ========================================================================= -->
+  <div class="sticky-bottom-ad" id="stickyBottomAd">
+    <div class="sticky-ad-inner">
+      <button type="button" class="sticky-close-btn" id="closeStickyAdBtn" title="Dismiss advertisement">✕</button>
+      <div class="mock-ad-left">
+        <div class="mock-ad-icon" style="width:36px; height:36px; font-size:1rem; background: linear-gradient(135deg, #f59e0b, #ef4444);">🚀</div>
+        <div class="mock-ad-texts">
+          <div class="mock-ad-title" style="font-size:0.875rem;">
+            Turbo Speed Booster
+            <span class="mock-ad-badge" style="background:rgba(245, 158, 11, 0.2); color:#fbbf24; border-color:rgba(245, 158, 11, 0.4);">Ad</span>
+          </div>
+          <div class="mock-ad-desc" style="font-size:0.75rem;">Boost your download speeds by up to 10x with zero buffering.</div>
+        </div>
+      </div>
+      <a href="https://github.com" target="_blank" rel="noopener noreferrer" class="mock-ad-cta" style="padding: 0.45rem 0.95rem; font-size: 0.775rem; background: linear-gradient(135deg, #f59e0b, #d97706);">
+        Try Free
+      </a>
+    </div>
+  </div>
+
+  <!-- Toast notification -->
+  <div class="toast" id="toastMsg"></div>
+
+  <script>
+    /* =========================================================================
+       AD CONFIGURATION & ROTATION SETTINGS
+       ========================================================================= */
+    const AD_CONFIG = {
+      // Set to true to show demo/mock ads; set to false if integrating real Google AdSense tags
+      showDemoAds: true,
+      // Google AdSense Client ID (Optional, e.g. 'ca-pub-1234567890123456')
+      googleAdsenseId: '',
+      // Rotating sponsor ads inside the download progress modal
+      sponsors: [
+        {
+          name: "CyberGuard Pro VPN",
+          title: "Download Fast. Stay Anonymous.",
+          desc: "Military-grade 256-bit AES encryption with zero logs and unlimited gigabit bandwidth worldwide.",
+          badge: "ad · 100% Verified",
+          cta: "Visit Sponsor",
+          url: "https://github.com",
+          bgImage: "https://images.unsplash.com/photo-1550751827-4bd374c3f58b?auto=format&fit=crop&w=900&q=80"
+        },
+        {
+          name: "CloudDrop Max",
+          title: "10TB Cloud Drive for Video Creators",
+          desc: "Save 4K videos, MP3 audio, and recordings automatically. Instant sync with zero file size limits.",
+          badge: "Sponsored Partner",
+          cta: "Claim 10TB Free",
+          url: "https://github.com",
+          bgImage: "https://images.unsplash.com/photo-1544197150-b99a580bb7a8?auto=format&fit=crop&w=900&q=80"
+        },
+        {
+          name: "StreamCast Studio",
+          title: "Edit, Trim & Enhance Video Online",
+          desc: "Professional browser-based video toolkit with AI subtitles, audio normalization, and 60fps export.",
+          badge: "Featured App",
+          cta: "Launch Editor",
+          url: "https://github.com",
+          bgImage: "https://images.unsplash.com/photo-1574717024653-61fd2cf4d44d?auto=format&fit=crop&w=900&q=80"
+        }
+      ]
+    };
+
+    // DOM Elements
+    const videoUrlInput = document.getElementById('videoUrl');
+    const pasteBtn = document.getElementById('pasteBtn');
+    const fetchBtn = document.getElementById('fetchBtn');
+    const detectedBadge = document.getElementById('detectedBadge');
+    const detectedDot = document.getElementById('detectedDot');
+    const detectedName = document.getElementById('detectedName');
+    
+    // Video Preview & Player elements
+    const videoPreview = document.getElementById('videoPreview');
+    const playerContainer = document.getElementById('playerContainer');
+    const previewThumb = document.getElementById('previewThumb');
+    const previewTitle = document.getElementById('previewTitle');
+    const previewChannel = document.getElementById('previewChannel');
+    const previewViews = document.getElementById('previewViews');
+    const currentPlaybackDisplay = document.getElementById('currentPlaybackDisplay');
+    const setStartBtn = document.getElementById('setStartBtn');
+    const setEndBtn = document.getElementById('setEndBtn');
+    const previewClipBtn = document.getElementById('previewClipBtn');
+
+    // Quality and download
+    const qualitySelect = document.getElementById('qualitySelect');
+    const downloadBtn = document.getElementById('downloadBtn');
+    const downloadBtnText = document.getElementById('downloadBtnText');
+    const activeTasksSection = document.getElementById('activeTasksSection');
+    const activeTasksList = document.getElementById('activeTasksList');
+    const fileList = document.getElementById('fileList');
+    const openFolderBtn = document.getElementById('openFolderBtn');
+    const refreshFilesBtn = document.getElementById('refreshFilesBtn');
+    const toastMsg = document.getElementById('toastMsg');
+
+    // Clipping controls
+    const clipSection = document.getElementById('clipSection');
+    const clipToggleHeader = document.getElementById('clipToggleHeader');
+    const clipToggle = document.getElementById('clipToggle');
+    const clipBody = document.getElementById('clipBody');
+    const clipStartTime = document.getElementById('clipStartTime');
+    const clipEndTime = document.getElementById('clipEndTime');
+    const clipDurationDisplay = document.getElementById('clipDurationDisplay');
+
+    // Modal elements for "Download Progress Bar while watching Ads"
+    const adModalBackdrop = document.getElementById('adModalBackdrop');
+    const adModalCloseBtn = document.getElementById('adModalCloseBtn');
+    const adModalThumb = document.getElementById('adModalThumb');
+    const adModalTitle = document.getElementById('adModalTitle');
+    const adModalPlatformTag = document.getElementById('adModalPlatformTag');
+    const adModalQualityTag = document.getElementById('adModalQualityTag');
+    const adInteractiveCard = document.getElementById('adInteractiveCard');
+    const modalStatusText = document.getElementById('modalStatusText');
+    const modalStatusLabel = document.getElementById('modalStatusLabel');
+    const modalStatusSpinner = document.getElementById('modalStatusSpinner');
+    const modalPercent = document.getElementById('modalPercent');
+    const modalProgressBar = document.getElementById('modalProgressBar');
+    const modalSpeed = document.getElementById('modalSpeed');
+    const modalEta = document.getElementById('modalEta');
+    const adModalCompletedBox = document.getElementById('adModalCompletedBox');
+    const modalDownloadFileBtn = document.getElementById('modalDownloadFileBtn');
+    const modalCloseCompletedLink = document.getElementById('modalCloseCompletedLink');
+    const modalDownloadAnotherLink = document.getElementById('modalDownloadAnotherLink');
+
+    // Sticky Ad elements
+    const stickyBottomAd = document.getElementById('stickyBottomAd');
+    const closeStickyAdBtn = document.getElementById('closeStickyAdBtn');
+
+    let currentVideoMeta = null;
+    let detectedPlatform = null;
+    let activeTasks = {};
+    let currentModalDownloadId = null;
+
+    // Active player reference
+    let ytPlayer = null;
+    let html5Player = null;
+    let playerTimePollInterval = null;
+
+    function stripAnsi(str) {
+      if (!str) return '';
+      return String(str).replace(/(\x1b|\x1B|≡|\^\[)?\[[0-9;]*[a-zA-Z]?/g, '').trim();
+    }
+
+    function showToast(text, isError = false) {
+      toastMsg.textContent = text;
+      toastMsg.style.display = 'flex';
+      toastMsg.style.borderColor = isError ? '#ef4444' : 'rgba(255, 255, 255, 0.15)';
+      setTimeout(() => {
+        toastMsg.style.display = 'none';
+      }, 3500);
+    }
+
+    function parseTimeStr(str) {
+      if (!str) return 0;
+      const parts = String(str).trim().split(':');
+      if (parts.length === 1) return parseFloat(parts[0]) || 0;
+      if (parts.length === 2) return (parseInt(parts[0]) || 0) * 60 + (parseFloat(parts[1]) || 0);
+      if (parts.length === 3) return (parseInt(parts[0]) || 0) * 3600 + (parseInt(parts[1]) || 0) * 60 + (parseFloat(parts[2]) || 0);
+      return 0;
+    }
+
+    function formatSeconds(sec) {
+      if (sec < 0) sec = 0;
+      const s = Math.floor(sec);
+      const hours = Math.floor(s / 3600);
+      const mins = Math.floor((s % 3600) / 60);
+      const remainingSecs = s % 60;
+      if (hours > 0) {
+        return `${hours}:${mins < 10 ? '0' : ''}${mins}:${remainingSecs < 10 ? '0' : ''}${remainingSecs}`;
+      }
+      return `${mins < 10 ? '0' : ''}${mins}:${remainingSecs < 10 ? '0' : ''}${remainingSecs}`;
+    }
+
+    function formatSecondsToDisplay(sec) {
+      if (sec <= 0) return '0s';
+      const s = Math.floor(sec);
+      const mins = Math.floor(s / 60);
+      const remainingSecs = s % 60;
+      if (mins > 0) {
+        return `${mins}m ${remainingSecs < 10 ? '0' : ''}${remainingSecs}s`;
+      }
+      return `${remainingSecs}s`;
+    }
+
+    function getPlayerCurrentTime() {
+      if (ytPlayer && typeof ytPlayer.getCurrentTime === 'function') {
+        try {
+          return ytPlayer.getCurrentTime() || 0;
+        } catch (e) {
+          return 0;
+        }
+      }
+      if (html5Player) {
+        return html5Player.currentTime || 0;
+      }
+      return 0;
+    }
+
+    function seekPlayerTo(seconds) {
+      if (ytPlayer && typeof ytPlayer.seekTo === 'function') {
+        ytPlayer.seekTo(seconds, true);
+        ytPlayer.playVideo();
+      } else if (html5Player) {
+        html5Player.currentTime = seconds;
+        html5Player.play();
+      }
+    }
+
+    function pausePlayer() {
+      if (ytPlayer && typeof ytPlayer.pauseVideo === 'function') {
+        ytPlayer.pauseVideo();
+      } else if (html5Player) {
+        html5Player.pause();
+      }
+    }
+
+    function startPlayerPolling() {
+      clearInterval(playerTimePollInterval);
+      playerTimePollInterval = setInterval(() => {
+        const cur = getPlayerCurrentTime();
+        currentPlaybackDisplay.textContent = formatSeconds(cur);
+      }, 350);
+    }
+
+    function updateClipDuration() {
+      if (!clipToggle.checked) {
+        downloadBtnText.textContent = 'Download Now';
+        return;
+      }
+      const start = parseTimeStr(clipStartTime.value);
+      const end = parseTimeStr(clipEndTime.value);
+      const diff = end - start;
+
+      if (diff > 0) {
+        clipDurationDisplay.innerHTML = `<span>Duration: ${formatSecondsToDisplay(diff)}</span>`;
+        downloadBtnText.textContent = `Download MP4 Clip (${clipStartTime.value.trim()} - ${clipEndTime.value.trim()})`;
+      } else {
+        clipDurationDisplay.innerHTML = `<span style="color:#f87171;">End time must be > Start</span>`;
+        downloadBtnText.textContent = 'Download MP4 Clip';
+      }
+    }
+
+    clipToggle.addEventListener('change', () => {
+      if (clipToggle.checked) {
+        clipSection.classList.add('active');
+        clipBody.style.display = 'block';
+      } else {
+        clipSection.classList.remove('active');
+        clipBody.style.display = 'none';
+      }
+      updateClipDuration();
+    });
+
+    clipToggleHeader.addEventListener('click', (e) => {
+      if (e.target !== clipToggle && !e.target.closest('.toggle-switch')) {
+        clipToggle.checked = !clipToggle.checked;
+        clipToggle.dispatchEvent(new Event('change'));
+      }
+    });
+
+    clipStartTime.addEventListener('input', updateClipDuration);
+    clipEndTime.addEventListener('input', updateClipDuration);
+
+    setStartBtn.addEventListener('click', () => {
+      const cur = getPlayerCurrentTime();
+      clipStartTime.value = formatSeconds(cur);
+      if (!clipToggle.checked) {
+        clipToggle.checked = true;
+        clipToggle.dispatchEvent(new Event('change'));
+      }
+      updateClipDuration();
+      showToast(`Start set to ${clipStartTime.value}`);
+    });
+
+    setEndBtn.addEventListener('click', () => {
+      const cur = getPlayerCurrentTime();
+      clipEndTime.value = formatSeconds(cur);
+      if (!clipToggle.checked) {
+        clipToggle.checked = true;
+        clipToggle.dispatchEvent(new Event('change'));
+      }
+      updateClipDuration();
+      showToast(`End set to ${clipEndTime.value}`);
+    });
+
+    let clipPreviewStopTimer = null;
+    previewClipBtn.addEventListener('click', () => {
+      const startSec = parseTimeStr(clipStartTime.value);
+      const endSec = parseTimeStr(clipEndTime.value);
+
+      if (endSec <= startSec) {
+        showToast('Please set a valid Start and End time first', true);
+        return;
+      }
+
+      seekPlayerTo(startSec);
+      showToast(`Previewing clip from ${clipStartTime.value} to ${clipEndTime.value}...`);
+
+      clearInterval(clipPreviewStopTimer);
+      clipPreviewStopTimer = setInterval(() => {
+        const cur = getPlayerCurrentTime();
+        if (cur >= endSec) {
+          pausePlayer();
+          clearInterval(clipPreviewStopTimer);
+          showToast('Clip preview finished');
+        }
+      }, 250);
+    });
+
+    function detectClientPlatform(url) {
+      if (!url) return null;
+      let u = url.toLowerCase().trim();
+      if (!u.startsWith('http://') && !u.startsWith('https://')) {
+        u = 'https://' + u;
+      }
+
+      if (u.includes('youtube.com') || u.includes('youtu.be')) {
+        return { name: 'YouTube', color: '#ff0033' };
+      } else if (u.includes('tiktok.com')) {
+        return { name: 'TikTok', color: '#00f2fe' };
+      } else if (u.includes('instagram.com')) {
+        return { name: 'Instagram', color: '#e1306c' };
+      } else if (u.includes('twitter.com') || u.includes('x.com')) {
+        return { name: 'X / Twitter', color: '#1da1f2' };
+      } else if (u.includes('facebook.com') || u.includes('fb.watch') || u.includes('fb.com')) {
+        return { name: 'Facebook', color: '#1877f2' };
+      } else if (u.includes('reddit.com') || u.includes('redd.it')) {
+        return { name: 'Reddit', color: '#ff4500' };
+      } else if (u.includes('twitch.tv')) {
+        return { name: 'Twitch', color: '#9146ff' };
+      } else if (u.includes('vimeo.com')) {
+        return { name: 'Vimeo', color: '#1ab7ea' };
+      } else if (u.includes('pinterest.com') || u.includes('pin.it')) {
+        return { name: 'Pinterest', color: '#bd081c' };
+      } else if (u.includes('soundcloud.com')) {
+        return { name: 'SoundCloud', color: '#ff5500' };
+      } else if (u.includes('.') && u.length > 7) {
+        return { name: 'Multi-Media', color: '#10b981' };
+      }
+      return null;
+    }
+
+    function updateDetectedBadge(p) {
+      if (p) {
+        detectedPlatform = p;
+        detectedName.textContent = p.name;
+        detectedDot.style.background = p.color || '#10b981';
+        detectedBadge.classList.add('active');
+      } else {
+        detectedPlatform = null;
+        detectedBadge.classList.remove('active');
+      }
+    }
+
+    pasteBtn.addEventListener('click', async () => {
+      try {
+        const text = await navigator.clipboard.readText();
+        if (text) {
+          videoUrlInput.value = text.trim();
+          handleUrlInput(true);
+        }
+      } catch (err) {
+        videoUrlInput.focus();
+        showToast('Please press Ctrl+V to paste', false);
+      }
+    });
+
+    let debounceTimer;
+    videoUrlInput.addEventListener('input', () => {
+      handleUrlInput(false);
+    });
+
+    function handleUrlInput(immediateInspect = false) {
+      clearTimeout(debounceTimer);
+      let url = videoUrlInput.value.trim();
+      const detected = detectClientPlatform(url);
+      updateDetectedBadge(detected);
+
+      if (detected && url.length > 5) {
+        if (immediateInspect) {
+          fetchVideoInfo();
+        } else {
+          debounceTimer = setTimeout(() => {
+            fetchVideoInfo();
+          }, 500);
+        }
+      }
+    }
+
+    fetchBtn.addEventListener('click', () => {
+      fetchVideoInfo();
+    });
+
+    async function fetchVideoInfo() {
+      let url = videoUrlInput.value.trim();
+      if (!url) {
+        showToast('Please enter a link', true);
+        return;
+      }
+      if (!url.startsWith('http://') && !url.startsWith('https://')) {
+        url = 'https://' + url;
+        videoUrlInput.value = url;
+      }
+
+      fetchBtn.disabled = true;
+      fetchBtn.innerHTML = '<span>Inspecting...</span>';
+
+      try {
+        const res = await fetch('/api/info', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ url })
+        });
+        const data = await res.json();
+
+        if (!data.success) {
+          showToast(data.error || 'Failed to fetch media info', true);
+          return;
+        }
+
+        currentVideoMeta = data;
+        if (data.platform) {
+          updateDetectedBadge(data.platform);
+        }
+
+        previewTitle.textContent = data.title;
+        previewChannel.textContent = data.uploader;
+        previewViews.textContent = `${data.view_count} views • ${data.duration}`;
+        videoPreview.style.display = 'flex';
+
+        setupVideoPlayer(data);
+
+        if (data.duration_raw && data.duration_raw > 0) {
+          const defaultEnd = Math.min(data.duration_raw, 60);
+          clipEndTime.value = formatSeconds(defaultEnd);
+          updateClipDuration();
+        }
+
+        const resList = data.available_resolutions || [];
+        updateQualityOptions(resList);
+
+        showToast(`Video loaded! Ready to download or clip.`);
+      } catch (e) {
+        showToast('Network error while checking link', true);
+      } finally {
+        fetchBtn.disabled = false;
+        fetchBtn.innerHTML = '<span>Inspect Video</span>';
+      }
+    }
+
+    function setupVideoPlayer(data) {
+      clearInterval(playerTimePollInterval);
+      ytPlayer = null;
+      html5Player = null;
+      playerContainer.innerHTML = '';
+
+      const platformId = data.platform?.id;
+      const videoId = data.video_id;
+      const streamUrl = data.stream_url;
+      const thumb = data.thumbnail;
+
+      if (platformId === 'youtube' && videoId) {
+        const ytDiv = document.createElement('div');
+        ytDiv.id = 'ytPlayerElement';
+        ytDiv.style.width = '100%';
+        ytDiv.style.height = '100%';
+        playerContainer.appendChild(ytDiv);
+
+        if (window.YT && window.YT.Player) {
+          initYouTubePlayer(videoId);
+        } else {
+          window.onYouTubeIframeAPIReady = () => initYouTubePlayer(videoId);
+        }
+      } else if (streamUrl && streamUrl.startsWith('http')) {
+        const video = document.createElement('video');
+        video.src = streamUrl;
+        video.controls = true;
+        video.playsInline = true;
+        video.poster = thumb || '';
+        video.style.width = '100%';
+        video.style.height = '100%';
+        playerContainer.appendChild(video);
+        html5Player = video;
+
+        video.addEventListener('timeupdate', () => {
+          currentPlaybackDisplay.textContent = formatSeconds(video.currentTime);
+        });
+        startPlayerPolling();
+      } else {
+        const img = document.createElement('img');
+        img.src = thumb || '';
+        img.alt = 'Thumbnail';
+        playerContainer.appendChild(img);
+      }
+    }
+
+    function initYouTubePlayer(videoId) {
+      try {
+        ytPlayer = new YT.Player('ytPlayerElement', {
+          videoId: videoId,
+          playerVars: {
+            autoplay: 0,
+            controls: 1,
+            modestbranding: 1,
+            rel: 0
+          },
+          events: {
+            onReady: () => {
+              startPlayerPolling();
+            }
+          }
+        });
+      } catch (err) {
+        playerContainer.innerHTML = `<iframe src="https://www.youtube.com/embed/${videoId}?enablejsapi=1" allowfullscreen></iframe>`;
+      }
+    }
+
+    function updateQualityOptions(resList) {
+      qualitySelect.innerHTML = `
+        <option value="best" selected>🌟 Best Available Quality (${resList[0] ? resList[0] + 'p' : 'Auto'})</option>
+        <option value="1080">🎬 1080p Full HD (MP4)${resList.includes(1080) ? ' ✓' : ''}</option>
+        <option value="720">📺 720p HD (MP4)${resList.includes(720) ? ' ✓' : ''}</option>
+        <option value="480">📱 480p SD (MP4)${resList.includes(480) ? ' ✓' : ''}</option>
+        <option value="360">⚡ 360p Low (MP4)${resList.includes(360) ? ' ✓' : ''}</option>
+        <option value="audio">🎵 Best Audio Only (MP3)</option>
+      `;
+    }
+
+    /* =========================================================================
+       EXCLUSIVE AD-WATCHING & DOWNLOAD PROGRESS MODAL CONTROLLER
+       ========================================================================= */
+    function rotateModalSponsor() {
+      const sponsors = AD_CONFIG.sponsors;
+      const sp = sponsors[Math.floor(Math.random() * sponsors.length)];
+      if (!sp) return;
+
+      adInteractiveCard.style.backgroundImage = `url('${sp.bgImage}')`;
+      adInteractiveCard.innerHTML = `
+        <div class="ad-card-overlay"></div>
+        <div class="ad-card-content">
+          <div class="ad-sponsor-pill">
+            <span class="chip-dot" style="background:#10b981;"></span>
+            <span>${sp.name}</span>
+          </div>
+          <div class="ad-main-pitch">
+            <h4 class="ad-pitch-title">${sp.title}</h4>
+            <p class="ad-pitch-desc">${sp.desc}</p>
+          </div>
+          <div class="ad-action-row">
+            <a href="${sp.url}" target="_blank" rel="noopener noreferrer" class="ad-visit-btn">
+              <span>${sp.cta}</span>
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+            </a>
+            <span class="ad-sponsor-brand">${sp.badge}</span>
+          </div>
+        </div>
+      `;
+    }
+
+    function openAdProgressModal(downloadId, metaTitle, thumbUrl, platformName, formatText) {
+      currentModalDownloadId = downloadId;
+      rotateModalSponsor();
+
+      adModalTitle.textContent = metaTitle || 'Processing Media...';
+      adModalThumb.src = thumbUrl || '';
+      adModalThumb.style.display = thumbUrl ? 'block' : 'none';
+      adModalPlatformTag.textContent = platformName || 'Media';
+      adModalQualityTag.textContent = formatText || 'Best Quality';
+
+      // Reset modal progress controls
+      modalPercent.textContent = '0%';
+      modalProgressBar.style.width = '0%';
+      modalStatusLabel.textContent = 'Starting download...';
+      modalStatusSpinner.style.display = 'inline-block';
+      modalSpeed.textContent = 'Connecting...';
+      modalEta.textContent = 'ETA: --:--';
+      adModalCompletedBox.style.display = 'none';
+
+      adModalBackdrop.style.display = 'flex';
+    }
+
+    function closeAdModal() {
+      adModalBackdrop.style.display = 'none';
+      currentModalDownloadId = null;
+    }
+
+    adModalCloseBtn.addEventListener('click', closeAdModal);
+    modalCloseCompletedLink.addEventListener('click', closeAdModal);
+    modalDownloadAnotherLink.addEventListener('click', () => {
+      closeAdModal();
+      videoUrlInput.value = '';
+      videoUrlInput.focus();
+    });
+
+    closeStickyAdBtn.addEventListener('click', () => {
+      stickyBottomAd.classList.add('closed');
+    });
+
+    /* =========================================================================
+       DOWNLOAD TRIGGER & PROGRESS SYNC
+       ========================================================================= */
+    downloadBtn.addEventListener('click', async () => {
+      const url = videoUrlInput.value.trim();
+      if (!url) {
+        showToast('Please enter a link first', true);
+        return;
+      }
+
+      const isClipping = clipToggle.checked;
+      let startTime = null;
+      let endTime = null;
+
+      if (isClipping) {
+        startTime = clipStartTime.value.trim();
+        endTime = clipEndTime.value.trim();
+        const startSec = parseTimeStr(startTime);
+        const endSec = parseTimeStr(endTime);
+        if (endSec <= startSec) {
+          showToast('End time must be greater than Start time for clipping', true);
+          return;
+        }
+      }
+
+      const quality = qualitySelect.value;
+      const title = currentVideoMeta ? currentVideoMeta.title : 'Media Video';
+      const thumb = currentVideoMeta ? currentVideoMeta.thumbnail : '';
+      const platformName = detectedPlatform ? detectedPlatform.name : 'Media';
+
+      let formatLabel = qualitySelect.options[qualitySelect.selectedIndex].text.split('(')[0].trim();
+      if (isClipping) {
+        formatLabel = `MP4 Clip (${startTime} - ${endTime})`;
+      }
+
+      downloadBtn.disabled = true;
+      downloadBtn.innerHTML = '<span>Starting...</span>';
+
+      try {
+        const res = await fetch('/api/download', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            url,
+            quality,
+            title,
+            thumbnail: thumb,
+            platform_name: platformName,
+            start_time: isClipping ? startTime : null,
+            end_time: isClipping ? endTime : null
+          })
+        });
+        const data = await res.json();
+
+        if (!data.success) {
+          showToast(data.error || 'Failed to start download', true);
+          return;
+        }
+
+        const downloadId = data.download_id;
+        showToast(isClipping ? `Clipping section ${startTime} - ${endTime}...` : `Download started!`);
+        
+        // OPEN THE AD-WATCHING & PROGRESS MODAL IMMEDIATELY
+        openAdProgressModal(downloadId, title, thumb, platformName, formatLabel);
+
+        // Also track on background page
+        trackDownload(downloadId, platformName, isClipping ? `${startTime} - ${endTime}` : null);
+      } catch (err) {
+        showToast('Error starting download', true);
+      } finally {
+        downloadBtn.disabled = false;
+        downloadBtn.innerHTML = `
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+          <span id="downloadBtnText">${clipToggle.checked ? `Download MP4 Clip (${clipStartTime.value} - ${clipEndTime.value})` : 'Download Now'}</span>
+        `;
+      }
+    });
+
+    function trackDownload(id, platformName, clipRange) {
+      activeTasksSection.style.display = 'block';
+
+      let taskEl = document.getElementById(`task-${id}`);
+      if (!taskEl) {
+        taskEl = document.createElement('div');
+        taskEl.id = `task-${id}`;
+        taskEl.className = 'task-item';
+        taskEl.innerHTML = `
+          <div class="task-header">
+            <div class="task-title-wrap">
+              <span class="task-platform-tag">${platformName || 'Media'}</span>
+              ${clipRange ? `<span class="task-clip-badge">✂️ Clip: ${clipRange}</span>` : ''}
+              <span class="task-title" id="title-${id}">Initializing download...</span>
+            </div>
+            <span class="task-status-badge status-starting" id="badge-${id}">Starting</span>
+          </div>
+          <div class="progress-bar-wrap">
+            <div class="progress-bar-fill" id="bar-${id}"></div>
+          </div>
+          <div class="task-footer">
+            <span class="speed-tag" id="speed-${id}">Connecting...</span>
+            <span class="percent-tag" id="percent-${id}">0%</span>
+            <span class="eta-tag" id="eta-${id}">ETA: --:--</span>
+          </div>
+        `;
+        activeTasksList.prepend(taskEl);
+      }
+
+      let autoTriggeredDownload = false;
+
+      const pollTimer = setInterval(async () => {
+        try {
+          const res = await fetch(`/api/progress/${id}`);
+          if (!res.ok) {
+            clearInterval(pollTimer);
+            return;
+          }
+          const body = await res.json();
+          if (!body.success) return;
+
+          const data = body.data;
+          const cleanTitle = stripAnsi(data.title || '');
+          const cleanSpeed = stripAnsi(data.speed_str || '');
+          const cleanEta = stripAnsi(data.eta_str || '');
+
+          // Update active tasks list on main page
+          const titleEl = document.getElementById(`title-${id}`);
+          const badgeEl = document.getElementById(`badge-${id}`);
+          const barEl = document.getElementById(`bar-${id}`);
+          const speedEl = document.getElementById(`speed-${id}`);
+          const percentEl = document.getElementById(`percent-${id}`);
+          const etaEl = document.getElementById(`eta-${id}`);
+
+          if (titleEl && cleanTitle) titleEl.textContent = cleanTitle;
+          if (barEl) barEl.style.width = `${data.percent || 0}%`;
+          if (percentEl) percentEl.textContent = `${data.percent || 0}%`;
+          if (speedEl) speedEl.textContent = cleanSpeed || '0 KiB/s';
+          if (etaEl) etaEl.textContent = cleanEta ? `ETA: ${cleanEta}` : '';
+
+          if (badgeEl) {
+            badgeEl.className = `task-status-badge status-${data.status}`;
+            badgeEl.textContent = data.status;
+          }
+
+          // SYNCHRONIZE MODAL PROGRESS BAR WHILE WATCHING ADS
+          if (currentModalDownloadId === id) {
+            modalProgressBar.style.width = `${data.percent || 0}%`;
+            modalPercent.textContent = `${data.percent || 0}%`;
+            modalSpeed.textContent = cleanSpeed ? `Speed: ${cleanSpeed}` : 'Processing...';
+            modalEta.textContent = cleanEta ? `ETA: ${cleanEta}` : '';
+
+            if (data.status === 'downloading') {
+              modalStatusLabel.textContent = `Downloading media streams (${data.percent || 0}%)...`;
+              modalStatusSpinner.style.display = 'inline-block';
+            } else if (data.status === 'processing') {
+              modalStatusLabel.textContent = `Merging streams & encoding output...`;
+              modalStatusSpinner.style.display = 'inline-block';
+            }
+          }
+
+          // COMPLETED STATE
+          if (data.status === 'completed') {
+            clearInterval(pollTimer);
+            showToast(`Ready: ${stripAnsi(data.filename) || 'Done!'}`);
+            loadDownloads();
+
+            if (currentModalDownloadId === id) {
+              modalProgressBar.style.width = '100%';
+              modalPercent.textContent = '100%';
+              modalStatusLabel.textContent = 'Conversion Complete! Your file is ready.';
+              modalStatusSpinner.style.display = 'none';
+              modalSpeed.textContent = 'Speed: Completed';
+              modalEta.textContent = 'Status: Ready';
+
+              // Show completion download button
+              const cleanFileName = stripAnsi(data.filename);
+              const downloadUrl = data.download_url || `/api/file/${encodeURIComponent(cleanFileName)}`;
+              modalDownloadFileBtn.href = downloadUrl;
+              modalDownloadFileBtn.setAttribute('download', cleanFileName);
+              adModalCompletedBox.style.display = 'flex';
+
+              // Auto-trigger direct browser save once if not already triggered
+              if (!autoTriggeredDownload && cleanFileName) {
+                autoTriggeredDownload = true;
+                const link = document.createElement('a');
+                link.href = downloadUrl;
+                link.setAttribute('download', cleanFileName);
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+              }
+            }
+
+            setTimeout(() => {
+              if (taskEl) taskEl.style.opacity = '0.7';
+            }, 5000);
+          } else if (data.status === 'error') {
+            clearInterval(pollTimer);
+            showToast(`Error: ${stripAnsi(data.error) || 'Download failed'}`, true);
+            if (currentModalDownloadId === id) {
+              modalStatusLabel.textContent = `Error: ${stripAnsi(data.error) || 'Download failed'}`;
+              modalStatusSpinner.style.display = 'none';
+            }
+          }
+        } catch (e) {
+          // Ignore polling errors
+        }
+      }, 700);
+
+      activeTasks[id] = pollTimer;
+    }
+
+    async function loadDownloads() {
+      try {
+        const res = await fetch('/api/downloads');
+        const data = await res.json();
+        if (!data.success) return;
+
+        if (data.files.length === 0) {
+          fileList.innerHTML = `<div class="empty-msg">No downloads yet. Files you download will appear here.</div>`;
+          return;
+        }
+
+        fileList.innerHTML = data.files.map(f => {
+          const isAudio = f.ext === 'mp3' || f.ext === 'm4a' || f.ext === 'wav';
+          return `
+            <div class="file-item">
+              <div class="file-info">
+                <div class="file-icon ${isAudio ? 'audio' : ''}">
+                  ${isAudio ? 'MP3' : 'MP4'}
+                </div>
+                <div>
+                  <div class="file-name" title="${f.name}">${f.name}</div>
+                  <div class="file-size">${f.size}</div>
+                </div>
+              </div>
+              <div class="file-actions">
+                <a href="/api/file/${encodeURIComponent(f.name)}" class="btn-secondary" download style="text-decoration:none;">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                  Save
+                </a>
+              </div>
+            </div>
+          `;
+        }).join('');
+      } catch (err) {
+        console.error(err);
+      }
+    }
+
+    openFolderBtn.addEventListener('click', async () => {
+      try {
+        const res = await fetch('/api/open-folder', { method: 'POST' });
+        const body = await res.json();
+        if (body.message) {
+          showToast(body.message);
+        } else {
+          showToast('Storage folder opened');
+        }
+      } catch (e) {
+        showToast('Click Save next to each file to download directly', false);
+      }
+    });
+
+    refreshFilesBtn.addEventListener('click', () => {
+      loadDownloads();
+      showToast('Refreshed files list');
+    });
+
+    loadDownloads();
+  </script>
+</body>
+</html>

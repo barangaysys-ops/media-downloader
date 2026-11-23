@@ -1,0 +1,11 @@
+services:
+  - type: web
+    name: media-downloader
+    runtime: docker
+    plan: starter
+    region: oregon
+    envVars:
+      - key: PORT
+        value: 5000
+      - key: NO_BROWSER
+        value: "true"
