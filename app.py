@@ -155,7 +155,10 @@ COOKIES_FILE = BASE_DIR / "cookies.txt"
 def sync_cookies_from_env():
     """Sync cookies from environment variable if present (ideal for cloud platforms like DigitalOcean)."""
     env_cookies = os.environ.get("YOUTUBE_COOKIES", "").strip()
-    if env_cookies:
+    if env_cookies and (not COOKIES_FILE.exists() or COOKIES_FILE.stat().st_size < 10):
+        # Handle case where newlines or tabs were escaped by cloud dashboards
+        if "\\n" in env_cookies and "\n" not in env_cookies:
+            env_cookies = env_cookies.replace("\\n", "\n").replace("\\t", "\t")
         try:
             with open(COOKIES_FILE, "w", encoding="utf-8") as f:
                 f.write(env_cookies)
@@ -165,7 +168,14 @@ def sync_cookies_from_env():
 
 sync_cookies_from_env()
 
+def is_bot_error(text):
+    if not text:
+        return False
+    t = str(text).lower()
+    return "not a bot" in t or "sign in to confirm" in t
+
 def get_base_ydl_opts():
+    sync_cookies_from_env()
     js_runtimes = {}
     if shutil.which("deno"):
         js_runtimes['deno'] = {}
@@ -176,11 +186,11 @@ def get_base_ydl_opts():
 
     has_cookies = COOKIES_FILE.exists() and COOKIES_FILE.stat().st_size > 10
 
-    # Choose best player client sequence based on whether authenticated cookies are available
+    # Include android_vr as primary bypass client for datacenter IPs (avoids bot detection)
     if has_cookies:
-        youtube_clients = ['web', 'tv_samsung', 'android', 'web_embedded']
+        youtube_clients = ['web', 'android_vr', 'tv_samsung', 'android', 'web_embedded']
     else:
-        youtube_clients = ['tv_samsung', 'visionos', 'web_embedded', 'android', 'ios']
+        youtube_clients = ['android_vr', 'tv_samsung', 'visionos', 'web_embedded']
 
     opts = {
         'ffmpeg_location': FFMPEG_PATH,
@@ -233,6 +243,20 @@ def detect_platform_from_url(url, extractor_key=None):
 @app.route("/")
 def index():
     return render_template("index.html")
+
+@app.route("/api/cookie-status")
+def cookie_status():
+    sync_cookies_from_env()
+    has_file = COOKIES_FILE.exists() and COOKIES_FILE.stat().st_size > 10
+    size = COOKIES_FILE.stat().st_size if COOKIES_FILE.exists() else 0
+    return jsonify({
+        "success": True,
+        "has_cookie_file": has_file,
+        "cookie_file_bytes": size,
+        "has_env_var": bool(os.environ.get("YOUTUBE_COOKIES")),
+        "env_var_length": len(os.environ.get("YOUTUBE_COOKIES", "")),
+        "bypass_client_ready": True
+    })
 
 @app.route("/api/detect-platform", methods=["POST"])
 def detect_platform():
@@ -313,8 +337,8 @@ def get_video_info():
             return jsonify(result)
     except Exception as e:
         err_msg = str(e)
-        if "Sign in to confirm you're not a bot" in err_msg:
-            err_msg = "YouTube bot verification triggered on cloud server IP. Add your cookies (via YOUTUBE_COOKIES environment variable or cookies.txt) to enable downloads."
+        if is_bot_error(err_msg):
+            err_msg = "YouTube bot verification triggered on cloud server IP. The server will automatically use fallback client bypass (android_vr) or updated cookies."
         elif "/s/" in url and ("reddit.com" in url or "redd.it" in url):
             err_msg = "Reddit shortlinks (/s/) cannot be extracted because Reddit redirects them to the subreddit homepage. Please open the post in your browser and copy the full URL (e.g., reddit.com/r/.../comments/...)."
         elif "Account authentication is required" in err_msg and "reddit" in err_msg.lower():
@@ -488,8 +512,8 @@ def run_download_task(download_id, url, quality, title, thumbnail, platform_name
         })
     except Exception as e:
         err_msg = clean_ansi(str(e))
-        if "Sign in to confirm you're not a bot" in err_msg:
-            err_msg = "YouTube bot verification triggered on cloud server IP. Add your cookies (via YOUTUBE_COOKIES environment variable or cookies.txt) to enable downloads."
+        if is_bot_error(err_msg):
+            err_msg = "YouTube bot verification triggered on cloud server IP. The server will automatically use fallback client bypass (android_vr) or updated cookies."
         elif "/s/" in url and ("reddit.com" in url or "redd.it" in url):
             err_msg = "Reddit shortlinks (/s/) cannot be extracted because Reddit redirects them to the subreddit homepage. Please open the post in your browser and copy the full URL (e.g., reddit.com/r/.../comments/...)."
         elif "Account authentication is required" in err_msg and "reddit" in err_msg.lower():
