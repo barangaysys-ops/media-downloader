@@ -139,11 +139,14 @@ def format_eta(seconds):
 def clean_video_url(url):
     if not url:
         return ""
-    # Remove tracking query parameters like ?si= or &feature= from media links
+    # Remove tracking query parameters from media links
     if "youtu.be" in url or "youtube.com" in url:
         url = re.sub(r'([?&])(si|feature)=[^&]+', '', url)
-        if '?' in url and not url.split('?')[1]:
-            url = url.rstrip('?')
+    elif "reddit.com" in url or "redd.it" in url:
+        url = re.sub(r'[?&]utm_[^&]+', '', url)
+        url = re.sub(r'[?&](context|ref|share_id)=[^&]+', '', url)
+    if '?' in url and not url.split('?')[1]:
+        url = url.rstrip('?')
     return url.strip()
 
 # Cookie file configuration for datacenter IPs (DigitalOcean, AWS, Render, etc.)
@@ -312,6 +315,10 @@ def get_video_info():
         err_msg = str(e)
         if "Sign in to confirm you're not a bot" in err_msg:
             err_msg = "YouTube bot verification triggered on cloud server IP. Add your cookies (via YOUTUBE_COOKIES environment variable or cookies.txt) to enable downloads."
+        elif "/s/" in url and ("reddit.com" in url or "redd.it" in url):
+            err_msg = "Reddit shortlinks (/s/) cannot be extracted because Reddit redirects them to the subreddit homepage. Please open the post in your browser and copy the full URL (e.g., reddit.com/r/.../comments/...)."
+        elif "Account authentication is required" in err_msg and "reddit" in err_msg.lower():
+            err_msg = "Reddit has blocked anonymous guest access. Please copy the direct post URL or provide authenticated cookies."
         return jsonify({"success": False, "error": err_msg}), 400
 
 def run_download_task(download_id, url, quality, title, thumbnail, platform_name, start_time=None, end_time=None):
@@ -483,6 +490,10 @@ def run_download_task(download_id, url, quality, title, thumbnail, platform_name
         err_msg = clean_ansi(str(e))
         if "Sign in to confirm you're not a bot" in err_msg:
             err_msg = "YouTube bot verification triggered on cloud server IP. Add your cookies (via YOUTUBE_COOKIES environment variable or cookies.txt) to enable downloads."
+        elif "/s/" in url and ("reddit.com" in url or "redd.it" in url):
+            err_msg = "Reddit shortlinks (/s/) cannot be extracted because Reddit redirects them to the subreddit homepage. Please open the post in your browser and copy the full URL (e.g., reddit.com/r/.../comments/...)."
+        elif "Account authentication is required" in err_msg and "reddit" in err_msg.lower():
+            err_msg = "Reddit has blocked anonymous guest access. Please copy the direct post URL or provide authenticated cookies."
         active_downloads[download_id].update({
             "status": "error",
             "error": err_msg

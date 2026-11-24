@@ -1657,46 +1657,6 @@
 </head>
 <body>
 
-  <!-- =========================================================================
-       LEFT SKYSCRAPER BANNER AD (160x600 for wide desktop screens)
-       ========================================================================= -->
-  <aside class="skyscraper-side left" id="leftSkyscraper">
-    <span class="ad-disclaimer">Ad · 160×600</span>
-    <!-- Insert Adsterra 160x600 Banner Code Below: -->
-    <a href="https://github.com" target="_blank" rel="noopener noreferrer" class="skyscraper-card">
-      <div style="display:flex; flex-direction:column; gap:0.5rem; align-items:center; text-align:center;">
-        <div class="mock-ad-icon" style="width:52px; height:52px; font-size:1.5rem; margin-top:0.5rem;">🛡️</div>
-        <div style="font-size:0.95rem; font-weight:800; color:#fff; line-height:1.2;">Ultra VPN Pro</div>
-        <div style="font-size:0.75rem; color:#94a3b8; line-height:1.3;">Unlimited speed for video downloads.</div>
-        <span class="mock-ad-badge" style="margin-top:0.25rem;">Sponsored</span>
-      </div>
-      <div style="display:flex; flex-direction:column; gap:0.5rem; align-items:center; width:100%;">
-        <div style="font-size:1.15rem; font-weight:800; color:#38bdf8;">82% OFF</div>
-        <div class="mock-ad-cta" style="width:100%; justify-content:center; padding:0.6rem 0.5rem;">Claim Now</div>
-      </div>
-    </a>
-  </aside>
-
-  <!-- =========================================================================
-       RIGHT SKYSCRAPER BANNER AD (160x600 for wide desktop screens)
-       ========================================================================= -->
-  <aside class="skyscraper-side right" id="rightSkyscraper">
-    <span class="ad-disclaimer">Ad · 160×600</span>
-    <!-- Insert Adsterra 160x600 Banner Code Below: -->
-    <a href="https://github.com" target="_blank" rel="noopener noreferrer" class="skyscraper-card">
-      <div style="display:flex; flex-direction:column; gap:0.5rem; align-items:center; text-align:center;">
-        <div class="mock-ad-icon" style="width:52px; height:52px; font-size:1.5rem; margin-top:0.5rem; background:linear-gradient(135deg, #10b981, #06b6d4);">⚡</div>
-        <div style="font-size:0.95rem; font-weight:800; color:#fff; line-height:1.2;">Turbo Downloader</div>
-        <div style="font-size:0.75rem; color:#94a3b8; line-height:1.3;">10x speed booster for streams & audio.</div>
-        <span class="mock-ad-badge" style="margin-top:0.25rem; background:rgba(16,185,129,0.2); color:#6ee7b7; border-color:rgba(16,185,129,0.4);">Verified</span>
-      </div>
-      <div style="display:flex; flex-direction:column; gap:0.5rem; align-items:center; width:100%;">
-        <div style="font-size:1.15rem; font-weight:800; color:#10b981;">FREE</div>
-        <div class="mock-ad-cta" style="width:100%; justify-content:center; padding:0.6rem 0.5rem; background:linear-gradient(135deg, #10b981, #059669);">Install App</div>
-      </div>
-    </a>
-  </aside>
-
   <div class="container">
     
     <!-- =====================================================================
@@ -2035,19 +1995,6 @@
   </div>
 
   <!-- =========================================================================
-       FLOATING SOCIAL BAR / SLIDE-IN PUSH NOTIFICATION AD
-       ========================================================================= -->
-  <div class="social-bar-ad" id="socialBarAd">
-    <button class="social-bar-close" id="closeSocialBarBtn" title="Close notification">✕</button>
-    <div class="social-bar-icon">🔥</div>
-    <div class="social-bar-info">
-      <div class="social-bar-title">High Speed Downloader</div>
-      <div class="social-bar-desc">Download in 4K with no waiting queue. Free trial!</div>
-    </div>
-    <a href="https://github.com" target="_blank" rel="noopener noreferrer" class="social-bar-action">Install</a>
-  </div>
-
-  <!-- =========================================================================
        STICKY BOTTOM BANNER AD (Can be minimized by user)
        ========================================================================= -->
   <div class="sticky-bottom-ad" id="stickyBottomAd">
@@ -2182,11 +2129,9 @@
     const modalCloseCompletedLink = document.getElementById('modalCloseCompletedLink');
     const modalDownloadAnotherLink = document.getElementById('modalDownloadAnotherLink');
 
-    // Sticky Ad & Social Bar elements
+    // Sticky Ad elements
     const stickyBottomAd = document.getElementById('stickyBottomAd');
     const closeStickyAdBtn = document.getElementById('closeStickyAdBtn');
-    const socialBarAd = document.getElementById('socialBarAd');
-    const closeSocialBarBtn = document.getElementById('closeSocialBarBtn');
 
     let currentVideoMeta = null;
     let detectedPlatform = null;
@@ -2655,13 +2600,11 @@
       videoUrlInput.focus();
     });
 
-    closeStickyAdBtn.addEventListener('click', () => {
-      stickyBottomAd.classList.add('closed');
-    });
-
-    closeSocialBarBtn.addEventListener('click', () => {
-      socialBarAd.classList.add('closed');
-    });
+    if (closeStickyAdBtn && stickyBottomAd) {
+      closeStickyAdBtn.addEventListener('click', () => {
+        stickyBottomAd.classList.add('closed');
+      });
+    }
 
     /* =========================================================================
        DOWNLOAD TRIGGER & PROGRESS SYNC
