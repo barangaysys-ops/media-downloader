@@ -146,6 +146,22 @@ def clean_video_url(url):
             url = url.rstrip('?')
     return url.strip()
 
+# Cookie file configuration for datacenter IPs (DigitalOcean, AWS, Render, etc.)
+COOKIES_FILE = BASE_DIR / "cookies.txt"
+
+def sync_cookies_from_env():
+    """Sync cookies from environment variable if present (ideal for cloud platforms like DigitalOcean)."""
+    env_cookies = os.environ.get("YOUTUBE_COOKIES", "").strip()
+    if env_cookies:
+        try:
+            with open(COOKIES_FILE, "w", encoding="utf-8") as f:
+                f.write(env_cookies)
+            print(f"[Cookies] Successfully loaded YouTube cookies from YOUTUBE_COOKIES env var ({len(env_cookies)} chars).")
+        except Exception as e:
+            print(f"[Cookies] Failed to write cookies from env: {e}")
+
+sync_cookies_from_env()
+
 def get_base_ydl_opts():
     js_runtimes = {}
     if shutil.which("deno"):
@@ -155,7 +171,15 @@ def get_base_ydl_opts():
     if not js_runtimes:
         js_runtimes = {'deno': {}, 'node': {}}
 
-    return {
+    has_cookies = COOKIES_FILE.exists() and COOKIES_FILE.stat().st_size > 10
+
+    # Choose best player client sequence based on whether authenticated cookies are available
+    if has_cookies:
+        youtube_clients = ['web', 'tv_samsung', 'android', 'web_embedded']
+    else:
+        youtube_clients = ['tv_samsung', 'visionos', 'web_embedded', 'android', 'ios']
+
+    opts = {
         'ffmpeg_location': FFMPEG_PATH,
         'noplaylist': True,
         'windowsfilenames': True,
@@ -166,10 +190,15 @@ def get_base_ydl_opts():
         'remote_components': ['ejs:github'],
         'extractor_args': {
             'youtube': {
-                'player_client': ['tv_samsung', 'web_embedded', 'android', 'ios'],
+                'player_client': youtube_clients,
             }
         },
     }
+
+    if has_cookies:
+        opts['cookiefile'] = str(COOKIES_FILE)
+
+    return opts
 
 def detect_platform_from_url(url, extractor_key=None):
     u = url.lower()
@@ -280,7 +309,10 @@ def get_video_info():
             }
             return jsonify(result)
     except Exception as e:
-        return jsonify({"success": False, "error": str(e)}), 400
+        err_msg = str(e)
+        if "Sign in to confirm you're not a bot" in err_msg:
+            err_msg = "YouTube bot verification triggered on cloud server IP. Add your cookies (via YOUTUBE_COOKIES environment variable or cookies.txt) to enable downloads."
+        return jsonify({"success": False, "error": err_msg}), 400
 
 def run_download_task(download_id, url, quality, title, thumbnail, platform_name, start_time=None, end_time=None):
     start_sec = parse_timestamp(start_time)
@@ -448,9 +480,12 @@ def run_download_task(download_id, url, quality, title, thumbnail, platform_name
             "eta_str": "0s"
         })
     except Exception as e:
+        err_msg = clean_ansi(str(e))
+        if "Sign in to confirm you're not a bot" in err_msg:
+            err_msg = "YouTube bot verification triggered on cloud server IP. Add your cookies (via YOUTUBE_COOKIES environment variable or cookies.txt) to enable downloads."
         active_downloads[download_id].update({
             "status": "error",
-            "error": clean_ansi(str(e))
+            "error": err_msg
         })
 
 @app.route("/api/download", methods=["POST"])
