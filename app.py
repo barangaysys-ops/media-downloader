@@ -186,11 +186,8 @@ def get_base_ydl_opts():
 
     has_cookies = COOKIES_FILE.exists() and COOKIES_FILE.stat().st_size > 10
 
-    # Include android_vr as primary bypass client for datacenter IPs (avoids bot detection)
-    if has_cookies:
-        youtube_clients = ['web', 'android_vr', 'tv_samsung', 'android', 'web_embedded']
-    else:
-        youtube_clients = ['android_vr', 'tv_samsung', 'visionos', 'web_embedded']
+    # Always prioritize android_vr to completely prevent YouTube datacenter bot detection
+    youtube_clients = ['android_vr', 'tv_samsung', 'visionos', 'web_embedded']
 
     opts = {
         'ffmpeg_location': FFMPEG_PATH,
@@ -212,6 +209,38 @@ def get_base_ydl_opts():
         opts['cookiefile'] = str(COOKIES_FILE)
 
     return opts
+
+def extract_with_strategy_fallback(ydl_opts, url, download=False):
+    """Try extraction with primary options, and automatically fall back if YouTube bot challenge is triggered."""
+    strategies = [
+        # Strategy 1: Primary configured options (android_vr first)
+        dict(ydl_opts),
+        # Strategy 2: Clean bypass without cookiefile (in case cookies are expired/rotated)
+        {**{k: v for k, v in ydl_opts.items() if k != 'cookiefile'},
+         'extractor_args': {'youtube': {'player_client': ['android_vr']}}},
+        # Strategy 3: Alternative clients
+        {**{k: v for k, v in ydl_opts.items() if k != 'cookiefile'},
+         'extractor_args': {'youtube': {'player_client': ['tv_samsung', 'visionos']}}},
+    ]
+
+    last_exc = None
+    for i, opts in enumerate(strategies):
+        try:
+            ydl = yt_dlp.YoutubeDL(opts)
+            info = ydl.extract_info(url, download=download)
+            if info:
+                return info, ydl
+        except Exception as e:
+            last_exc = e
+            err_text = str(e).lower()
+            if not is_bot_error(err_text) and "page needs to be reloaded" not in err_text:
+                raise e
+            print(f"[Extractor Notice] Strategy {i+1} got bot challenge, falling back to strategy {i+2}...")
+            continue
+
+    if last_exc:
+        raise last_exc
+    return None, None
 
 def detect_platform_from_url(url, extractor_key=None):
     u = url.lower()
@@ -274,67 +303,66 @@ def get_video_info():
     try:
         ydl_opts = get_base_ydl_opts()
         ydl_opts['extract_flat'] = False
-        with yt_dlp.YoutubeDL(ydl_opts) as ydl:
-            info = ydl.extract_info(url, download=False)
-            if not info:
-                return jsonify({"success": False, "error": "Could not extract media information from this link"}), 400
+        info, _ = extract_with_strategy_fallback(ydl_opts, url, download=False)
+        if not info:
+            return jsonify({"success": False, "error": "Could not extract media information from this link"}), 400
 
-            extractor_key = info.get("extractor_key") or info.get("extractor", "")
-            platform = detect_platform_from_url(url, extractor_key)
+        extractor_key = info.get("extractor_key") or info.get("extractor", "")
+        platform = detect_platform_from_url(url, extractor_key)
 
-            formats = info.get("formats", [])
-            resolutions = set()
-            has_audio = False
-            for f in formats:
-                h = f.get("height")
-                if h and f.get("vcodec") != "none":
-                    resolutions.add(h)
+        formats = info.get("formats", [])
+        resolutions = set()
+        has_audio = False
+        for f in formats:
+            h = f.get("height")
+            if h and f.get("vcodec") != "none":
+                resolutions.add(h)
+            if f.get("acodec") != "none":
+                has_audio = True
+
+        sorted_res = sorted(list(resolutions), reverse=True)
+
+        duration_sec = info.get("duration", 0)
+        if duration_sec:
+            mins, secs = divmod(int(duration_sec), 60)
+            hours, mins = divmod(mins, 60)
+            duration_str = f"{hours}:{mins:02d}:{secs:02d}" if hours else f"{mins}:{secs:02d}"
+        else:
+            duration_str = "Video / Audio Clip"
+
+        # Find direct stream or embed URL
+        embed_url = ""
+        video_id = info.get("id", "")
+        if platform["id"] == "youtube" and video_id:
+            embed_url = f"https://www.youtube.com/embed/{video_id}?enablejsapi=1"
+        elif platform["id"] == "vimeo" and video_id:
+            embed_url = f"https://player.vimeo.com/video/{video_id}"
+
+        stream_url = ""
+        for f in reversed(formats):
+            if f.get("ext") == "mp4" and f.get("url") and f.get("vcodec") != "none":
+                stream_url = f.get("url")
                 if f.get("acodec") != "none":
-                    has_audio = True
+                    break
+        if not stream_url:
+            stream_url = info.get("url", "")
 
-            sorted_res = sorted(list(resolutions), reverse=True)
-
-            duration_sec = info.get("duration", 0)
-            if duration_sec:
-                mins, secs = divmod(int(duration_sec), 60)
-                hours, mins = divmod(mins, 60)
-                duration_str = f"{hours}:{mins:02d}:{secs:02d}" if hours else f"{mins}:{secs:02d}"
-            else:
-                duration_str = "Video / Audio Clip"
-
-            # Find direct stream or embed URL
-            embed_url = ""
-            video_id = info.get("id", "")
-            if platform["id"] == "youtube" and video_id:
-                embed_url = f"https://www.youtube.com/embed/{video_id}?enablejsapi=1"
-            elif platform["id"] == "vimeo" and video_id:
-                embed_url = f"https://player.vimeo.com/video/{video_id}"
-
-            stream_url = ""
-            for f in reversed(formats):
-                if f.get("ext") == "mp4" and f.get("url") and f.get("vcodec") != "none":
-                    stream_url = f.get("url")
-                    if f.get("acodec") != "none":
-                        break
-            if not stream_url:
-                stream_url = info.get("url", "")
-
-            result = {
-                "success": True,
-                "platform": platform,
-                "video_id": video_id,
-                "embed_url": embed_url,
-                "stream_url": stream_url,
-                "title": info.get("title", "Media"),
-                "uploader": info.get("uploader") or info.get("channel") or info.get("creator") or platform["name"],
-                "duration": duration_str,
-                "duration_raw": duration_sec,
-                "thumbnail": info.get("thumbnail", ""),
-                "view_count": f"{info.get('view_count', 0):,}" if info.get('view_count') else "N/A",
-                "available_resolutions": sorted_res,
-                "has_audio": has_audio
-            }
-            return jsonify(result)
+        result = {
+            "success": True,
+            "platform": platform,
+            "video_id": video_id,
+            "embed_url": embed_url,
+            "stream_url": stream_url,
+            "title": info.get("title", "Media"),
+            "uploader": info.get("uploader") or info.get("channel") or info.get("creator") or platform["name"],
+            "duration": duration_str,
+            "duration_raw": duration_sec,
+            "thumbnail": info.get("thumbnail", ""),
+            "view_count": f"{info.get('view_count', 0):,}" if info.get('view_count') else "N/A",
+            "available_resolutions": sorted_res,
+            "has_audio": has_audio
+        }
+        return jsonify(result)
     except Exception as e:
         err_msg = str(e)
         if is_bot_error(err_msg):
@@ -441,9 +469,7 @@ def run_download_task(download_id, url, quality, title, thumbnail, platform_name
                 ydl_opts['format'] = 'bestvideo+bestaudio/best'
             ydl_opts['merge_output_format'] = 'mp4'
 
-        info = None
-        with yt_dlp.YoutubeDL(ydl_opts) as ydl:
-            info = ydl.extract_info(url, download=True)
+        info, ydl = extract_with_strategy_fallback(ydl_opts, url, download=True)
 
         # Robust filename resolution after download & FFmpeg post-processing
         resolved_file = None
